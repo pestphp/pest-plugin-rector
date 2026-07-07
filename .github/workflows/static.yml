@@ -1,0 +1,35 @@
+name: Static Analysis
+
+on: ['push', 'pull_request']
+
+permissions:
+  contents: read
+
+jobs:
+  static:
+    name: Static Tests
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        dependency-version: [prefer-lowest, prefer-stable]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@df4cb1c069e1874edd31b4311f1884172cec0e10 # v6.0.3
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@7c071dfe9dc99bdf297fa79cb49ea005b9fcadbc # v2
+      with:
+        php-version: 8.4
+        tools: composer:v2
+        coverage: none
+
+    - name: Install Dependencies
+      run: composer update --prefer-stable --no-interaction --no-progress --ansi
+
+    - name: Types
+      run: composer test:types
+
+    - name: Style
+      run: composer test:lint
