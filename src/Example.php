@@ -11,9 +11,6 @@ use PHPUnit\Framework\TestCase;
  */
 trait Example // @phpstan-ignore-line
 {
-    /**
-     * Example description.
-     */
     public function example(string $name): TestCase
     {
         expect($name)->toBeString();

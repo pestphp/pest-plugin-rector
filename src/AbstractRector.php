@@ -36,16 +36,10 @@ use Rector\Rector\AbstractRector as BaseAbstractRector;
 use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
 /**
- * Base abstract class for all Pest rectors
- * Provides common helper methods for working with Pest's expect() chains
- *
  * @phpstan-type StmtsAwareNode Block|Closure|Case_|Catch_|ClassMethod|Declare_|Do_|Else_|ElseIf_|Finally_|For_|Foreach_|Function_|If_|Namespace_|TryCatch|While_|FileNode
  */
 abstract class AbstractRector extends BaseAbstractRector implements DocumentedRuleInterface
 {
-    /**
-     * Check if a method call is part of an expect() chain
-     */
     protected function isExpectChain(MethodCall $methodCall): bool
     {
         $root = $this->getExpectChainRoot($methodCall);
@@ -57,9 +51,6 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return false;
     }
 
-    /**
-     * Get the root expect() function call from a method chain
-     */
     protected function getExpectFuncCall(MethodCall $methodCall): ?FuncCall
     {
         $root = $this->getExpectChainRoot($methodCall);
@@ -75,9 +66,6 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return null;
     }
 
-    /**
-     * Get the argument passed to expect() from a method chain
-     */
     protected function getExpectArgument(MethodCall $methodCall): ?Expr
     {
         $expectCall = $this->getExpectFuncCall($methodCall);
@@ -99,11 +87,6 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return $arg->value;
     }
 
-    /**
-     * Check if the expect() argument matches a specific type category.
-     * Unwraps the Expectation<T> generic (resolved by PestStan's PHPStan extension)
-     * to extract T, then checks the type against the given category.
-     */
     protected function isExpectValueOfType(MethodCall $methodCall, string $typeCheck): bool
     {
         $expectCall = $this->getExpectFuncCall($methodCall);
@@ -129,9 +112,6 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         };
     }
 
-    /**
-     * Get the root of an expect chain (either FuncCall or PropertyFetch for ->not)
-     */
     protected function getExpectChainRoot(MethodCall $methodCall): FuncCall|PropertyFetch|null
     {
         $current = $methodCall->var;
@@ -140,10 +120,6 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
             $current = $current->var;
         }
 
-        // Try to find an underlying FuncCall (expect(...)) even if there are
-        // intermediate PropertyFetch nodes (e.g. ->not) whose var is a
-        // MethodCall. Walk down through property/method var links to locate
-        // the FuncCall if present.
         $search = $current;
         while ($search instanceof PropertyFetch || $search instanceof MethodCall) {
             $search = $search->var;
@@ -168,20 +144,14 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return null;
     }
 
-    /**
-     * Check if the expect chain has a ->not modifier
-     */
     protected function hasNotModifier(MethodCall $methodCall): bool
     {
         $current = $methodCall->var;
 
-        // Check if the immediate predecessor is a ->not property fetch
         return $current instanceof PropertyFetch && $this->isName($current, 'not');
     }
 
     /**
-     * Collect all method calls in a chain from root to leaf
-     *
      * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>, is_property?: bool}>
      */
     protected function collectChainMethods(MethodCall $methodCall): array
@@ -221,9 +191,7 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
     }
 
     /**
-     * Rebuild a method chain from a base expression
-     *
-     * @param array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>, is_property?: bool}> $methods
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>, is_property?: bool}>  $methods
      */
     protected function rebuildMethodChain(Expr $base, array $methods): Expr
     {
@@ -254,7 +222,7 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
     }
 
     /**
-     * @param array<Node\Stmt> $stmts
+     * @param  array<Node\Stmt>  $stmts
      */
     protected function setStatements(Node $node, array $stmts): void
     {

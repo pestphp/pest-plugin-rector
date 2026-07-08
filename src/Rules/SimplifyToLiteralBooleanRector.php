@@ -15,9 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Simplifies toBe/toEqual with literal values to dedicated matchers
- */
 final class SimplifyToLiteralBooleanRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -58,7 +55,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -93,7 +90,7 @@ CODE_SAMPLE
     private function getMatcherForLiteral(Node $value): ?string
     {
         if ($value instanceof ConstFetch) {
-            $name = strtolower($value->name->toString());
+            $name = mb_strtolower($value->name->toString());
 
             if ($name === 'true') {
                 return 'toBeTrue';

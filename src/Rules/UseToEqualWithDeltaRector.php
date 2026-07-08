@@ -17,9 +17,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts abs() difference comparisons to toEqualWithDelta() matcher
- */
 final class UseToEqualWithDeltaRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -52,7 +49,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,16 +66,13 @@ CODE_SAMPLE
         }
 
         $expectArg = $this->getExpectArgument($node);
-        if (!$expectArg instanceof Expr) {
+        if (! $expectArg instanceof Expr) {
             return null;
         }
 
         return $this->handleAbsComparison($expectArg, $node);
     }
 
-    /**
-     * Handle abs($a - $b) < $delta or abs($a - $b) <= $delta pattern
-     */
     private function handleAbsComparison(Expr $expectArg, MethodCall $node): ?MethodCall
     {
         if (! $expectArg instanceof Smaller && ! $expectArg instanceof SmallerOrEqual) {
@@ -114,7 +108,7 @@ CODE_SAMPLE
         $expected = $minus->right;
 
         $expectCall = $this->getExpectFuncCall($node);
-        if (!$expectCall instanceof FuncCall) {
+        if (! $expectCall instanceof FuncCall) {
             return null;
         }
 

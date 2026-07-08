@@ -17,14 +17,9 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts PHPUnit assertion method calls to Pest expect() chains
- */
 final class ConvertAssertToExpectRector extends AbstractRector
 {
     /**
-     * Assertions with (actual) → expect(actual)->matcher()
-     *
      * @var array<string, array{matcher: string, negated: bool}>
      */
     private const SINGLE_ARG_ASSERTIONS = [
@@ -71,8 +66,6 @@ final class ConvertAssertToExpectRector extends AbstractRector
     ];
 
     /**
-     * Assertions with (expected, actual) → expect(actual)->matcher(expected)
-     *
      * @var array<string, array{matcher: string, negated: bool}>
      */
     private const TWO_ARG_ASSERTIONS = [
@@ -86,8 +79,6 @@ final class ConvertAssertToExpectRector extends AbstractRector
         'assertInstanceOf' => ['matcher' => 'toBeInstanceOf', 'negated' => false],
         'assertNotInstanceOf' => ['matcher' => 'toBeInstanceOf', 'negated' => true],
         'assertContains' => ['matcher' => 'toContain', 'negated' => false],
-        // PHPUnit's assertContainsEquals() uses loose-comparison semantics, so it maps to
-        // Pest's toContainEqual() instead of the stricter toContain() used by UseToContainRector.
         'assertContainsEquals' => ['matcher' => 'toContainEqual', 'negated' => false],
         'assertNotContains' => ['matcher' => 'toContain', 'negated' => true],
         'assertNotContainsEquals' => ['matcher' => 'toContainEqual', 'negated' => true],
@@ -108,8 +99,6 @@ final class ConvertAssertToExpectRector extends AbstractRector
     ];
 
     /**
-     * Assertions with (expected, actual, extra) → expect(actual)->matcher(expected, extra)
-     *
      * @var array<string, array{matcher: string, negated: bool}>
      */
     private const THREE_ARG_ASSERTIONS = [
@@ -199,7 +188,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -300,9 +289,7 @@ CODE_SAMPLE
     }
 
     /**
-     * Build the expect()->matcher() or expect()->not->matcher() chain
-     *
-     * @param array<Arg> $matcherArgs
+     * @param  array<Arg>  $matcherArgs
      */
     private function buildResult(FuncCall $expectCall, string $matcher, array $matcherArgs, bool $negated): MethodCall
     {

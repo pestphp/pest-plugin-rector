@@ -11,9 +11,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts expect($page->url()) assertions to dedicated browser URL assertion methods
- */
 final class UseBrowserUrlAssertionsRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -46,7 +43,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

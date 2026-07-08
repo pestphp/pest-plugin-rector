@@ -15,10 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts Str::snake() equality checks to toBeSnakeCase() matcher.
- * Requires illuminate/support (Laravel).
- */
 final class UseToBeSnakeCaseRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -51,7 +47,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -73,7 +69,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Pattern 1: Str::snake($value) === $value
         if ($this->isStrMethod($expectArg->left, 'snake')) {
             $staticCall = $expectArg->left;
             if ($this->nodeComparator->areNodesEqual($this->getFirstStaticArg($staticCall), $expectArg->right)) {
@@ -88,7 +83,6 @@ CODE_SAMPLE
             }
         }
 
-        // Pattern 2: $value === Str::snake($value)
         if ($this->isStrMethod($expectArg->right, 'snake')) {
             $staticCall = $expectArg->right;
             if ($this->nodeComparator->areNodesEqual($expectArg->left, $this->getFirstStaticArg($staticCall))) {

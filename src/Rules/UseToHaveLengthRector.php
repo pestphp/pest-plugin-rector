@@ -14,12 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts strlen()/mb_strlen() comparisons to Pest's toHaveLength() matcher.
- *
- * Before: expect(strlen($string))->toBe(10)
- * After:  expect($string)->toHaveLength(10)
- */
 final class UseToHaveLengthRector extends AbstractRector
 {
     /**
@@ -59,7 +53,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -73,12 +67,10 @@ CODE_SAMPLE
 
         $methodName = $node->name->name;
 
-        // Only handle toBe() and toEqual() with a length argument
         if ($methodName !== 'toBe' && $methodName !== 'toEqual') {
             return null;
         }
 
-        // Need exactly one argument (the expected length)
         if (count($node->args) !== 1) {
             return null;
         }
@@ -116,7 +108,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // strlen/mb_strlen requires at least 1 argument (the string)
         if (count($funcCall->args) < 1) {
             return null;
         }
@@ -130,7 +121,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Update expect() to use the string directly
         $expectCall->args[0] = new Arg($stringArg->value);
 
         return new MethodCall($expectCall, 'toHaveLength', [new Arg($lengthArg->value)]);

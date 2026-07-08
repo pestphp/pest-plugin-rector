@@ -12,8 +12,7 @@ final readonly class ExpectationSemanticAnalysis
         public string $literalCategory,
         public bool $negated,
         public bool $matches,
-    ) {
-    }
+    ) {}
 
     public static function forDeterministicLiteralTypeCheck(
         string $matcher,

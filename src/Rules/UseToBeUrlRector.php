@@ -18,9 +18,6 @@ use RuntimeException;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts filter_var URL validation to toBeUrl() matcher
- */
 final class UseToBeUrlRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -55,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -70,10 +67,9 @@ CODE_SAMPLE
 
         $expectArg = $this->getExpectArgument($node);
 
-        // Pattern 1: expect(filter_var($url, FILTER_VALIDATE_URL))->not->toBeFalse()
         if ($this->isName($node->name, 'toBeFalse') && $this->isNotChain($node) && $this->isFilterVarValidateUrl($expectArg)) {
             $urlArg = $this->getUrlFromFilterVar($expectArg);
-            if (!$urlArg instanceof Expr) {
+            if (! $urlArg instanceof Expr) {
                 return null;
             }
 
@@ -82,16 +78,15 @@ CODE_SAMPLE
             }
 
             $expectCall->args = [new Arg($urlArg)];
-            // Remove the 'not' from the chain
             $node->var = $this->removeNotFromChain($node->var);
             $node->name = new Identifier('toBeUrl');
+
             return $node;
         }
 
-        // Pattern 2: expect(filter_var($url, FILTER_VALIDATE_URL) !== false)->toBeTrue()
         if ($this->isName($node->name, 'toBeTrue') && $expectArg instanceof NotIdentical && ($this->isFilterVarValidateUrl($expectArg->left) && $this->isFalse($expectArg->right))) {
             $urlArg = $this->getUrlFromFilterVar($expectArg->left);
-            if (!$urlArg instanceof Expr) {
+            if (! $urlArg instanceof Expr) {
                 return null;
             }
 
@@ -101,6 +96,7 @@ CODE_SAMPLE
 
             $expectCall->args = [new Arg($urlArg)];
             $node->name = new Identifier('toBeUrl');
+
             return $node;
         }
 

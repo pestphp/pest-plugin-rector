@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts array_is_list() checks to Pest's toBeList() matcher.
- *
- * Before: expect(array_is_list($array))->toBeTrue()
- * After:  expect($array)->toBeList()
- */
 final class UseToBeListRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -56,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

@@ -15,9 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts UUID regex validation to toBeUuid() matcher
- */
 final class UseToBeUuidRector extends AbstractRector
 {
     private const UUID_REGEX_PATTERNS = [
@@ -58,7 +55,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -88,7 +85,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Get the pattern argument
         $patternArg = $expectArg->args[0];
         if (! $patternArg instanceof Arg) {
             return null;
@@ -100,12 +96,10 @@ CODE_SAMPLE
 
         $pattern = $patternArg->value->value;
 
-        // Check if it matches any UUID pattern
         if (! in_array($pattern, self::UUID_REGEX_PATTERNS, true)) {
             return null;
         }
 
-        // Get the subject argument (the value being tested)
         $subjectArg = $expectArg->args[1];
         if (! $subjectArg instanceof Arg) {
             return null;
@@ -115,7 +109,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Verify the assertion matches what we expect for a successful regex match
         if ($this->isName($node->name, 'toBe')) {
             if (count($node->args) !== 1) {
                 return null;
@@ -136,10 +129,8 @@ CODE_SAMPLE
             }
         }
 
-        // Replace expect(preg_match(...)) with expect($value)
         $expectCall->args = [new Arg($subjectArg->value)];
 
-        // Replace toBe(1) or toBeGreaterThan(0) with toBeUuid()
         $node->name = new Identifier('toBeUuid');
         $node->args = [];
 

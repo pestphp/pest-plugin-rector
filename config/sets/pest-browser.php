@@ -21,7 +21,7 @@ use RectorPest\Rules\Browser\UseBrowserValueAssertionsRector;
  */
 return static function (RectorConfig $rectorConfig): void {
     // Import shared Rector configuration (PHP version, parallel settings, etc.)
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 
     // Value assertions
     $rectorConfig->rule(UseBrowserValueAssertionsRector::class);

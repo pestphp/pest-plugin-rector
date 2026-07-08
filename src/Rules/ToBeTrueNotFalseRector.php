@@ -13,9 +13,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Simplifies double-negative expectations to their positive equivalents
- */
 final class ToBeTrueNotFalseRector extends AbstractRector
 {
     /**
@@ -58,7 +55,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -80,7 +77,7 @@ CODE_SAMPLE
         }
 
         $expectArgument = $this->getExpectArgument($node);
-        if (!$expectArgument instanceof Expr) {
+        if (! $expectArgument instanceof Expr) {
             return null;
         }
 
@@ -102,7 +99,6 @@ CODE_SAMPLE
 
         $methods = $this->collectChainMethods($methodCall);
 
-        // remove only the `not` property fetch entries (keep other property fetches like ->each)
         $methods = array_values(array_filter($methods, function (array $m): bool {
             if (empty($m['is_property'])) {
                 return true;

@@ -13,9 +13,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts expect($page->attribute()) assertions on aria-* and data-* attributes to dedicated browser assertion methods
- */
 final class UseBrowserAriaAndDataAttributeAssertionsRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -50,7 +47,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -91,10 +88,10 @@ CODE_SAMPLE
         $attrValue = $attrArg->value->value;
 
         if (str_starts_with($attrValue, 'aria-')) {
-            $strippedName = substr($attrValue, strlen('aria-'));
+            $strippedName = mb_substr($attrValue, mb_strlen('aria-'));
             $assertMethod = 'assertAriaAttribute';
         } elseif (str_starts_with($attrValue, 'data-')) {
-            $strippedName = substr($attrValue, strlen('data-'));
+            $strippedName = mb_substr($attrValue, mb_strlen('data-'));
             $assertMethod = 'assertDataAttribute';
         } else {
             return null;

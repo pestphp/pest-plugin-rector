@@ -11,9 +11,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts expect($page->attribute($selector, $attr)) assertions to dedicated browser attribute assertion methods
- */
 final class UseBrowserAttributeAssertionsRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -52,7 +49,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -101,7 +98,6 @@ CODE_SAMPLE
             return new MethodCall($pageVar, new Identifier('assertAttributeMissing'), $baseArgs);
         }
 
-        // not->toBe is intentionally not transformed: the plugin has no assertAttributeIsNot equivalent.
         return null;
     }
 }

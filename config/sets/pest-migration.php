@@ -13,7 +13,7 @@ use RectorPest\Rules\ConvertExpectExceptionToThrowRector;
  * These are structural transformations and should be reviewed after application.
  */
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 
     // PHPUnit assertion to Pest expect() conversion
     $rectorConfig->rule(ConvertAssertToExpectRector::class);

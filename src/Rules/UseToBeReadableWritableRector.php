@@ -12,25 +12,17 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts is_readable()/is_writable() checks to Pest's toBeReadable()/toBeWritable() matchers.
- *
- * Before: expect(is_readable($path))->toBeTrue()
- * After:  expect($path)->toBeReadable()
- */
 final class UseToBeReadableWritableRector extends AbstractRector
 {
     use ExpectChainValidation;
 
     /**
-     * Map of functions to their matcher methods.
-     *
      * @var array<string, string>
      */
     private const FUNCTION_MATCHERS = [
         'is_readable' => 'toBeReadable',
         'is_writable' => 'toBeWritable',
-        'is_writeable' => 'toBeWritable', // alias
+        'is_writeable' => 'toBeWritable',
     ];
 
     // @codeCoverageIgnoreStart
@@ -65,7 +57,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

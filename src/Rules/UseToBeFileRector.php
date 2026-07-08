@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts is_file() checks to Pest's toBeFile() matcher.
- *
- * Before: expect(is_file($path))->toBeTrue()
- * After:  expect($path)->toBeFile()
- */
 final class UseToBeFileRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

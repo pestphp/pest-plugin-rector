@@ -16,9 +16,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts range checks to toBeBetween() matcher
- */
 final class UseToBeBetweenRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -53,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -75,7 +72,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Check for pattern: $value >= $min && $value <= $max
         $left = $expectArg->left;
         $right = $expectArg->right;
 
@@ -83,7 +79,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Ensure both comparisons are on the same variable
         if (! $this->nodeComparator->areNodesEqual($left->left, $right->left)) {
             return null;
         }
@@ -96,10 +91,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // Replace expect($value >= $min && $value <= $max) with expect($value)
         $expectCall->args = [new Arg($variable)];
 
-        // Replace toBeTrue() with toBeBetween($min, $max)
         $node->name = new Identifier('toBeBetween');
         $node->args = [new Arg($min), new Arg($max)];
 

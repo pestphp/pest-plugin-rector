@@ -13,9 +13,6 @@ use RectorPest\Rules\RemoveStaticTestClosureRector;
 use RectorPest\ValueObject\PestSemanticIssue;
 use RectorPest\ValueObject\SemanticFixCandidate;
 
-/**
- * Maps canonical semantic issues to the Rector rules that can safely address them.
- */
 final readonly class SemanticIssueMapper
 {
     /**
@@ -31,8 +28,7 @@ final readonly class SemanticIssueMapper
 
     public function __construct(
         private PestDiagnosticResolver $diagnosticResolver = new PestDiagnosticResolver(),
-    ) {
-    }
+    ) {}
 
     public function supportsDiagnostic(string $diagnosticIdentifier): bool
     {
@@ -50,7 +46,7 @@ final readonly class SemanticIssueMapper
     public function resolveCandidatesForDiagnostic(string $diagnosticIdentifier): array
     {
         $issue = $this->diagnosticResolver->resolve($diagnosticIdentifier);
-        if (!$issue instanceof PestSemanticIssue) {
+        if (! $issue instanceof PestSemanticIssue) {
             return [];
         }
 

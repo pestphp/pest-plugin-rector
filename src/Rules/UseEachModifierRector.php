@@ -17,9 +17,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts foreach loops with expect() to ->each modifier
- */
 final class UseEachModifierRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -54,7 +51,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param Foreach_ $node
+     * @param  Foreach_  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -108,10 +105,6 @@ CODE_SAMPLE
         return new Expression($result);
     }
 
-    /**
-     * Check if the loop variable is referenced anywhere in the method chain
-     * beyond the initial expect() argument (e.g. in ->and() arguments)
-     */
     private function loopVariableUsedInChain(MethodCall $methodCall, Variable $loopVar): bool
     {
         $nodeFinder = new NodeFinder();

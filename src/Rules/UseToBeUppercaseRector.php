@@ -14,9 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts uppercase string checks to toBeUppercase() matcher
- */
 final class UseToBeUppercaseRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -51,7 +48,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -73,7 +70,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Pattern 1: strtoupper($value) === $value
         if ($this->isStrtoupper($expectArg->left)) {
             $strtoUpperCall = $expectArg->left;
             if ($this->nodeComparator->areNodesEqual($this->getFirstArg($strtoUpperCall), $expectArg->right)) {
@@ -83,11 +79,11 @@ CODE_SAMPLE
 
                 $expectCall->args = [new Arg($expectArg->right)];
                 $node->name = new Identifier('toBeUppercase');
+
                 return $node;
             }
         }
 
-        // Pattern 2: $value === strtoupper($value)
         if ($this->isStrtoupper($expectArg->right)) {
             $strtoUpperCall = $expectArg->right;
             if ($this->nodeComparator->areNodesEqual($expectArg->left, $this->getFirstArg($strtoUpperCall))) {
@@ -97,6 +93,7 @@ CODE_SAMPLE
 
                 $expectCall->args = [new Arg($expectArg->left)];
                 $node->name = new Identifier('toBeUppercase');
+
                 return $node;
             }
         }

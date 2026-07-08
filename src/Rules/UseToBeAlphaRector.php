@@ -13,9 +13,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts ctype_alpha() checks to toBeAlpha() matcher
- */
 final class UseToBeAlphaRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -48,7 +45,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -87,10 +84,8 @@ CODE_SAMPLE
             return null;
         }
 
-        // Replace expect(ctype_alpha($value)) with expect($value)
         $expectCall->args = [new Arg($ctypeArg->value)];
 
-        // Replace toBeTrue() with toBeAlpha()
         $node->name = new Identifier('toBeAlpha');
 
         return $node;

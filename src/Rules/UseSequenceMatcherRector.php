@@ -23,9 +23,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts consecutive indexed expect() calls to Pest 4's sequence() matcher
- */
 final class UseSequenceMatcherRector extends AbstractRector
 {
     private const SEQUENCE_PARAM_NAME = 'e';
@@ -84,7 +81,7 @@ CODE_SAMPLE
             }
 
             $sequenceCall = $this->buildSequenceCall($group['variable'], $group['chains']);
-            if (!$sequenceCall instanceof MethodCall) {
+            if (! $sequenceCall instanceof MethodCall) {
                 $newStmts[] = $stmts[$i];
                 $i++;
 
@@ -106,8 +103,6 @@ CODE_SAMPLE
     }
 
     /**
-     * Collect a group of consecutive expect($var[$index]) statements starting from sequential index 0.
-     *
      * @param  Node\Stmt[]  $stmts
      * @return array{variable: Expr, chains: list<MethodCall>}|null
      */
@@ -145,7 +140,6 @@ CODE_SAMPLE
 
             $expectArg = $expectCall->args[0]->value;
 
-            // Must be an array dim fetch: $var[$index]
             if (! $expectArg instanceof ArrayDimFetch) {
                 break;
             }
@@ -161,8 +155,7 @@ CODE_SAMPLE
 
             $variable = $expectArg->var;
 
-            // All statements must reference the same variable
-            if (!$baseVariable instanceof Expr) {
+            if (! $baseVariable instanceof Expr) {
                 $baseVariable = $variable;
             } elseif (! $this->nodeComparator->areNodesEqual($baseVariable, $variable)) {
                 break;
@@ -172,8 +165,7 @@ CODE_SAMPLE
             $expectedIndex++;
         }
 
-        // Need at least 2 consecutive indexed expects to form a sequence
-        if (count($chains) < 2 || !$baseVariable instanceof Expr) {
+        if (count($chains) < 2 || ! $baseVariable instanceof Expr) {
             return null;
         }
 
@@ -184,8 +176,6 @@ CODE_SAMPLE
     }
 
     /**
-     * Build: expect($var)->sequence(fn ($e) => $e->matcher(...), ...)
-     *
      * @param  list<MethodCall>  $chains
      */
     private function buildSequenceCall(Expr $variable, array $chains): ?MethodCall
@@ -194,7 +184,7 @@ CODE_SAMPLE
 
         foreach ($chains as $chain) {
             $arrowBody = $this->rebuildChainOnParam($chain);
-            if (!$arrowBody instanceof Expr) {
+            if (! $arrowBody instanceof Expr) {
                 return null;
             }
 
@@ -218,13 +208,8 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * Rebuild the matcher chain, replacing the root expect($var[$i]) with $e.
-     * For `expect($items[0])->toBe('a')`, returns `$e->toBe('a')`.
-     */
     private function rebuildChainOnParam(MethodCall $methodCall): ?Expr
     {
-        // Collect the chain of method calls from outermost to innermost
         $calls = [];
         $current = $methodCall;
 
@@ -233,14 +218,9 @@ CODE_SAMPLE
             $current = $current->var;
         }
 
-        // The innermost should be the expect() FuncCall (or ->not PropertyFetch)
-        // Replace it with $e variable
         $paramVar = new Variable(self::SEQUENCE_PARAM_NAME);
 
-        // Skip ->not PropertyFetch handling for now — sequence with ->not is unusual
         if ($current instanceof PropertyFetch) {
-            // This is expect($var[$i])->not->toBe(...)
-            // We want $e->not->toBe(...)
             $base = new PropertyFetch($paramVar, new Identifier('not'));
         } elseif ($current instanceof FuncCall) {
             $base = $paramVar;
@@ -248,7 +228,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Rebuild the chain from innermost to outermost
         $result = $base;
         for ($i = count($calls) - 1; $i >= 0; $i--) {
             $result = new MethodCall($result, $calls[$i]->name, $calls[$i]->args);

@@ -13,12 +13,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts sort-then-compare patterns to Pest's toEqualCanonicalizing() matcher.
- *
- * Before: expect(sort($a))->toEqual(sort($b))
- * After:  expect($a)->toEqualCanonicalizing($b)
- */
 final class UseToEqualCanonicalizingRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -53,7 +47,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -92,7 +86,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Check if the comparison arg is also a sort() call
         $compareArg = $node->args[0];
         if (! $compareArg instanceof Arg) {
             return null;
@@ -115,7 +108,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Replace expect(sort($a))->toEqual(sort($b)) with expect($a)->toEqualCanonicalizing($b)
         $expectCall->args = [new Arg($sortArg->value)];
         $node->name = new Identifier('toEqualCanonicalizing');
         $node->args = [new Arg($compareInnerArg->value)];

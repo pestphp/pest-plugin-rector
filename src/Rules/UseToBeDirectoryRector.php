@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts is_dir() checks to Pest's toBeDirectory() matcher.
- *
- * Before: expect(is_dir($path))->toBeTrue()
- * After:  expect($path)->toBeDirectory()
- */
 final class UseToBeDirectoryRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

@@ -14,17 +14,9 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Simplifies negated expectations by flipping the matcher method.
- *
- * Converts expect(!$x)->toBeTrue() to expect($x)->toBeFalse()
- * and expect(!$x)->toBeFalse() to expect($x)->toBeTrue().
- */
 final class SimplifyExpectNotRector extends AbstractRector
 {
     /**
-     * Map of matcher methods that can be flipped when negation is removed.
-     *
      * @var array<string, string>
      */
     private const FLIPPABLE_MATCHERS = [
@@ -68,7 +60,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -94,25 +86,19 @@ CODE_SAMPLE
             return null;
         }
 
-        // Get the final method call in the chain to check if it's flippable
         $finalMethodName = $this->getFinalMethodName($node);
         if ($finalMethodName === null || ! isset(self::FLIPPABLE_MATCHERS[$finalMethodName])) {
             return null;
         }
 
-        // Remove the negation from expect() argument
         $negatedExpression = $arg->value->expr;
         $expectCall->args[0] = $this->nodeFactory->createArg($negatedExpression);
 
-        // Flip the matcher method
         $this->flipFinalMatcher($node, self::FLIPPABLE_MATCHERS[$finalMethodName]);
 
         return $node;
     }
 
-    /**
-     * Get the name of the final method in the expect chain.
-     */
     private function getFinalMethodName(MethodCall $methodCall): ?string
     {
         if (! $methodCall->name instanceof Identifier) {
@@ -122,9 +108,6 @@ CODE_SAMPLE
         return $methodCall->name->name;
     }
 
-    /**
-     * Flip the final matcher method to its opposite.
-     */
     private function flipFinalMatcher(MethodCall $methodCall, string $newMethodName): void
     {
         $methodCall->name = new Identifier($newMethodName);

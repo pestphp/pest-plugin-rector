@@ -99,18 +99,13 @@ CODE_SAMPLE
                 continue;
             }
 
-
             $methods = $this->collectChainMethods($methodCall);
             if ($methods === []) {
                 continue;
             }
 
-
-            // Reorder type matchers before non-type matchers within each segment
-            // separated by `and` calls. Preserve `and` methods and their args.
             $newMethods = $this->reorderWithinAndSegments($methods);
 
-            // if methods changed, rebuild chain
             if ($newMethods !== $methods) {
                 $root = $this->getExpectChainRoot($methodCall);
                 if (! $root instanceof Expr) {
@@ -119,10 +114,10 @@ CODE_SAMPLE
 
                 $stmt->expr = $this->rebuildMethodChain($root, $newMethods);
                 $hasChanged = true;
+
                 continue;
             }
 
-            // handle consecutive expect statements on same subject: swap so type-only comes first
             if (isset($stmts[$key + 1]) && $stmts[$key + 1] instanceof Expression) {
                 $next = $stmts[$key + 1];
                 if (! $next->expr instanceof MethodCall) {
@@ -140,7 +135,6 @@ CODE_SAMPLE
                         $firstHasOnlyNonType = $firstPartition['type'] === [] && $firstPartition['non_type'] !== [];
                         $secondHasType = $secondPartition['type'] !== [];
 
-                        // Ensure the first statement does not contain unsafe methods before attempting to swap.
                         $firstIsSafe = true;
                         foreach ($firstPartition['non_type'] as $nm) {
                             $nameValue = $nm['name'];
@@ -152,7 +146,6 @@ CODE_SAMPLE
                         }
 
                         if ($firstHasOnlyNonType && $secondHasType && $firstIsSafe) {
-                            // swap statements
                             $stmts[$key] = $next;
                             $stmts[$key + 1] = $stmt;
                             $hasChanged = true;
@@ -172,9 +165,7 @@ CODE_SAMPLE
     }
 
     /**
-     * Partition collected methods into type vs non-type preserving original order
-     *
-     * @param array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}> $methods
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
      * @return array{type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>, non_type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>}
      */
     private function partitionTypeAndNonType(array $methods): array
@@ -184,12 +175,7 @@ CODE_SAMPLE
 
         foreach ($methods as $m) {
             $nameValue = $m['name'];
-            if ($nameValue instanceof Node) {
-                $name = $this->getName($nameValue);
-            } else {
-                // $nameValue is string
-                $name = $nameValue;
-            }
+            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
 
             if ($name !== null && $this->isTypeMatcherName($name)) {
                 $type[] = $m;
@@ -209,9 +195,6 @@ CODE_SAMPLE
     /**
      * @see https://pestphp.com/docs/expectations
      * @see https://pestphp.com/docs/higher-order-testing#content-higher-order-expectations
-     * Detects if a method name is likely a safe Pest assertion that allows reordering.
-     * Unknown methods are treated as `Higher Order Expectations`
-     * and type matchers should not be moved before them.
      */
     private function isSafeNonTypeMatcher(string $name): bool
     {
@@ -239,10 +222,7 @@ CODE_SAMPLE
     }
 
     /**
-     * Reorder type matchers inside each segment separated by `and`.
-     * Returns the new flattened methods list (root->leaf order).
-     *
-     * @param array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}> $methods
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
      * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>
      */
     private function reorderWithinAndSegments(array $methods): array
@@ -252,8 +232,6 @@ CODE_SAMPLE
         $segment = [];
 
         $flushSegment = function () use (&$segment, &$result): void {
-            // If the segment contains `each`, skip reordering to preserve
-            // the scoping semantics of `each` (e.g. ->each()->toBeNull()).
             foreach ($segment as $sm) {
                 $nameValue = $sm['name'];
                 $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
@@ -263,15 +241,13 @@ CODE_SAMPLE
                     }
 
                     $segment = [];
+
                     return;
                 }
             }
 
-            // Process the current segment
             $partitioned = $this->partitionTypeAndNonType($segment);
 
-            // If the segment contains any non-type matcher that is NOT in the safe list,
-            // we assume it is a `Higher Order Expectations` and abort reordering for this segment to be safe.
             foreach ($partitioned['non_type'] as $nm) {
                 $nameValue = $nm['name'];
                 $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
@@ -286,7 +262,6 @@ CODE_SAMPLE
                 }
             }
 
-            // Check if we need to reorder: type matcher after non-type matcher
             $needsReorder = false;
             $hasType = $partitioned['type'] !== [];
             $hasNonType = $partitioned['non_type'] !== [];
@@ -307,9 +282,6 @@ CODE_SAMPLE
                     }
                 }
 
-                // If there is a type -> non-type -> type pattern (interleaved),
-                // reordering could change semantics (e.g. ->toBeInstanceOf(...)->each->toBeInstanceOf(...)).
-                // Detect that pattern and avoid reordering for such segments.
                 if ($needsReorder) {
                     $foundType = false;
                     $foundNonAfterType = false;
@@ -337,14 +309,9 @@ CODE_SAMPLE
             }
 
             if ($needsReorder) {
-                // Place only the prefix modifiers (e.g. ->not) that appear before
-                // the first type matcher in the original segment before type matchers.
-                // This avoids moving `each` that scopes the following matcher(s)
-                // but appears after an initial type matcher.
                 $prefixBeforeType = [];
                 $otherNonType = [];
 
-                // Determine prefix modifiers that come before the first type matcher
                 $foundType = false;
                 foreach ($segment as $m) {
                     $nameValue = $m['name'];
@@ -360,11 +327,6 @@ CODE_SAMPLE
                     }
                 }
 
-                // Build otherNonType as all non_type entries excluding those
-                // that were treated as prefixBeforeType (preserve their original order).
-                // Use a consumed-list so that each prefix entry is only matched once,
-                // preventing duplicate modifier names (e.g. a second `->not->` that
-                // appears after the type matcher) from being incorrectly dropped.
                 $remainingPrefixes = $prefixBeforeType;
                 foreach ($partitioned['non_type'] as $m) {
                     $nameValue = $m['name'];
@@ -402,12 +364,12 @@ CODE_SAMPLE
             $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
 
             if ($name === 'and') {
-                // finish current segment, then add the `and` method itself
                 if ($segment !== []) {
                     $flushSegment();
                 }
 
                 $result[] = $m;
+
                 continue;
             }
 

@@ -11,14 +11,9 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Removes debug method calls (dump, dd, ray) from expect chains
- */
 final class RemoveDebugExpectationsRector extends AbstractRector
 {
     /**
-     * Debug methods that should be removed from expect chains.
-     *
      * @var string[]
      */
     private const DEBUG_METHODS = ['dump', 'dd', 'ray'];
@@ -55,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

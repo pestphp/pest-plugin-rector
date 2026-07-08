@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts str_ends_with() checks to Pest's toEndWith() matcher.
- *
- * Before: expect(str_ends_with($string, 'suffix'))->toBeTrue()
- * After:  expect($string)->toEndWith('suffix')
- */
 final class UseToEndWithRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +63,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // str_ends_with requires 2 arguments: haystack, needle
         if (count($funcCall->args) !== 2) {
             return null;
         }

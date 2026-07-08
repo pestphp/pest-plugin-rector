@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts str_starts_with() checks to Pest's toStartWith() matcher.
- *
- * Before: expect(str_starts_with($string, 'prefix'))->toBeTrue()
- * After:  expect($string)->toStartWith('prefix')
- */
 final class UseToStartWithRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +63,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // str_starts_with requires 2 arguments: haystack, needle
         if (count($funcCall->args) !== 2) {
             return null;
         }

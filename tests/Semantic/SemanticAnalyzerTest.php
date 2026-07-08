@@ -180,18 +180,16 @@ PHP,
 });
 
 #[Attribute]
-final class ExampleAttribute
-{
-}
+final class ExampleAttribute {}
 
 /**
- * @param callable(Node): bool $filter
+ * @param  callable(Node): bool  $filter
  */
 function findFirstNode(string $code, callable $filter): Node
 {
     $parser = (new ParserFactory())->createForNewestSupportedVersion();
     $nodeFinder = new NodeFinder();
-    $nodes = $parser->parse("<?php\n\n" . $code);
+    $nodes = $parser->parse("<?php\n\n".$code);
 
     expect($nodes)->not->toBeNull();
 

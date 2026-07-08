@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts in_array() checks with value as first arg to Pest's toBeIn() matcher.
- *
- * Before: expect(in_array($value, $allowedValues))->toBeTrue()
- * After:  expect($value)->toBeIn($allowedValues)
- */
 final class UseToBeInRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -54,7 +48,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -65,7 +59,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // in_array has 2 or 3 args: in_array($needle, $haystack, $strict = false)
         if (count($funcCall->args) < 2 || count($funcCall->args) > 3) {
             return null;
         }

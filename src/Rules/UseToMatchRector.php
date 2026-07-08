@@ -14,9 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts preg_match assertions to toMatch() matcher
- */
 final class UseToMatchRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -51,7 +48,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

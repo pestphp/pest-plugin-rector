@@ -12,17 +12,9 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Removes only() from all tests.
- *
- * Before: test()->only()
- * After:  test()
- */
 final class RemoveOnlyRector extends AbstractRector
 {
     /**
-     * Pest test function names that can have ->only() called on them.
-     *
      * @var string[]
      */
     private const PEST_TEST_FUNCTIONS = [
@@ -66,7 +58,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -80,7 +72,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Only remove ->only() if called on a Pest test function
         if (! $this->isPestTestChain($node)) {
             return null;
         }
@@ -88,19 +79,14 @@ CODE_SAMPLE
         return $node->var;
     }
 
-    /**
-     * Check if the method chain originates from a Pest test function.
-     */
     private function isPestTestChain(MethodCall $methodCall): bool
     {
         $current = $methodCall->var;
 
-        // Walk up the method chain to find the root
         while ($current instanceof MethodCall) {
             $current = $current->var;
         }
 
-        // The root should be a FuncCall (e.g., test(), it(), describe())
         if (! $current instanceof FuncCall) {
             return false;
         }

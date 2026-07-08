@@ -67,7 +67,7 @@ use RectorPest\Rules\UseTypeMatchersRector;
  * - Using dedicated matchers instead of generic comparisons
  */
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 
     // Iteration
     $rectorConfig->rule(UseEachModifierRector::class);

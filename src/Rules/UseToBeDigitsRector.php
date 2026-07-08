@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts ctype_digit() checks to Pest's toBeDigits() matcher.
- *
- * Before: expect(ctype_digit($value))->toBeTrue()
- * After:  expect($value)->toBeDigits()
- */
 final class UseToBeDigitsRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -56,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

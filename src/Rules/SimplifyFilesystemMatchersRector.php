@@ -14,21 +14,9 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Simplifies combined filesystem checks to single Pest matchers.
- *
- * Before: expect(is_file($p) && is_readable($p))->toBeTrue()
- * After:  expect($p)->toBeReadableFile()
- *
- * Before: expect($p)->toBeFile()->toBeReadable()
- * After:  expect($p)->toBeReadableFile()
- */
 final class SimplifyFilesystemMatchersRector extends AbstractRector
 {
     /**
-     * Map of combined function pairs to their combined matcher.
-     * Keys are sorted alphabetically: [func1, func2] => matcher
-     *
      * @var array<string, array<string, string>>
      */
     private const COMBINED_FUNCTION_MATCHERS = [
@@ -45,8 +33,6 @@ final class SimplifyFilesystemMatchersRector extends AbstractRector
     ];
 
     /**
-     * Map of chained matcher pairs to their combined matcher.
-     *
      * @var array<string, array<string, string>>
      */
     private const COMBINED_CHAIN_MATCHERS = [
@@ -92,7 +78,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -103,9 +89,6 @@ CODE_SAMPLE
         return $this->refactorBooleanAnd($node) ?? $this->refactorChainedMatchers($node);
     }
 
-    /**
-     * Handle: expect(is_file($p) && is_readable($p))->toBeTrue()
-     */
     private function refactorBooleanAnd(MethodCall $node): ?Node
     {
         if (! $this->isName($node->name, 'toBeTrue')) {
@@ -136,7 +119,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Ensure both functions have exactly one argument
         if (count($left->args) !== 1 || count($right->args) !== 1) {
             return null;
         }
@@ -148,7 +130,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Ensure both functions operate on the same value
         if (! $this->nodeComparator->areNodesEqual($leftArg->value, $rightArg->value)) {
             return null;
         }
@@ -166,9 +147,6 @@ CODE_SAMPLE
         return $node;
     }
 
-    /**
-     * Handle: expect($p)->toBeFile()->toBeReadable()
-     */
     private function refactorChainedMatchers(MethodCall $node): ?Node
     {
         $outerName = $this->getName($node->name);
@@ -176,12 +154,10 @@ CODE_SAMPLE
             return null;
         }
 
-        // The outer call must be toBeReadable or toBeWritable
         if (! in_array($outerName, ['toBeReadable', 'toBeWritable'], true)) {
             return null;
         }
 
-        // The inner call must be toBeFile or toBeDirectory
         $inner = $node->var;
         if (! $inner instanceof MethodCall) {
             return null;
@@ -196,14 +172,12 @@ CODE_SAMPLE
             return null;
         }
 
-        // Ensure both calls have no arguments (no custom message)
         if ($node->args !== [] || $inner->args !== []) {
             return null;
         }
 
         $combinedMatcher = self::COMBINED_CHAIN_MATCHERS[$innerName][$outerName];
 
-        // Replace the chained calls with a single combined matcher on the inner's var
         $inner->name = new Identifier($combinedMatcher);
 
         return $inner;

@@ -15,12 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts bool cast assertions to toBeTruthy()/toBeFalsy() matchers.
- *
- * Before: expect((bool) $value)->toBeTrue()
- * After:  expect($value)->toBeTruthy()
- */
 final class SimplifyToBeTruthyFalsyRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -55,7 +49,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -73,11 +67,10 @@ CODE_SAMPLE
         }
 
         $expectArg = $this->getExpectArgument($node);
-        if (!$expectArg instanceof Expr) {
+        if (! $expectArg instanceof Expr) {
             return null;
         }
 
-        // Pattern: expect((bool) $value)->toBeTrue/toBeFalse()
         if ($expectArg instanceof Bool_) {
             $isTrue = $this->isName($node->name, 'toBeTrue');
             $matcher = $isTrue ? 'toBeTruthy' : 'toBeFalsy';
@@ -88,7 +81,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        // Pattern: expect(boolval($value))->toBeTrue/toBeFalse()
         if ($expectArg instanceof FuncCall && $this->isName($expectArg, 'boolval')) {
             if (count($expectArg->args) !== 1) {
                 return null;

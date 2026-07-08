@@ -13,9 +13,6 @@ use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 
-/**
- * Shared utility for detecting and inspecting Pest function calls.
- */
 final class PestFunctionDetector
 {
     /** @var list<string> */

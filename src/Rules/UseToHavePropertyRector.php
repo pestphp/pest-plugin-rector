@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts property_exists() checks to Pest's toHaveProperty() matcher.
- *
- * Before: expect(property_exists($object, 'name'))->toBeTrue()
- * After:  expect($object)->toHaveProperty('name')
- */
 final class UseToHavePropertyRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +63,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // property_exists requires 2 arguments: object|class, property
         if (count($funcCall->args) !== 2) {
             return null;
         }

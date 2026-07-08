@@ -14,9 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts count() comparison to toHaveSameSize() matcher
- */
 final class UseToHaveSameSizeRector extends AbstractRector
 {
     /**
@@ -56,7 +53,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +66,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Pattern 1: expect(count($a))->toBe(count($b))
         if ($this->isNames($node->name, ['toBe', 'toEqual'])) {
             if (count($node->args) !== 1) {
                 return null;
@@ -89,11 +85,10 @@ CODE_SAMPLE
                 return null;
             }
 
-            // Get the arrays being counted
             $firstArray = $this->getCountedValue($expectArg);
             $secondArray = $this->getCountedValue($assertionArg->value);
 
-            if (!$firstArray instanceof Expr || !$secondArray instanceof Expr) {
+            if (! $firstArray instanceof Expr || ! $secondArray instanceof Expr) {
                 return null;
             }
 
@@ -102,17 +97,14 @@ CODE_SAMPLE
                 return null;
             }
 
-            // Replace expect(count($a)) with expect($a)
             $expectCall->args = [new Arg($firstArray)];
 
-            // Replace toBe(count($b)) with toHaveSameSize($b)
             $node->name = new Identifier('toHaveSameSize');
             $node->args = [new Arg($secondArray)];
 
             return $node;
         }
 
-        // Pattern 2: expect($a)->toHaveCount(count($b))
         if ($this->isName($node->name, 'toHaveCount')) {
             if (count($node->args) !== 1) {
                 return null;
@@ -128,7 +120,7 @@ CODE_SAMPLE
             }
 
             $secondArray = $this->getCountedValue($countArg->value);
-            if (!$secondArray instanceof Expr) {
+            if (! $secondArray instanceof Expr) {
                 return null;
             }
 
@@ -140,7 +132,6 @@ CODE_SAMPLE
                 }
             }
 
-            // Replace toHaveCount(count($b)) with toHaveSameSize($b)
             $node->name = new Identifier('toHaveSameSize');
             $node->args = [new Arg($secondArray)];
 

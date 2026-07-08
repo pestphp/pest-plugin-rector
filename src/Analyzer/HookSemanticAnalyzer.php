@@ -12,7 +12,7 @@ use RectorPest\Support\PestFunctionDetector;
 final class HookSemanticAnalyzer
 {
     /**
-     * @param array<string, string> $hookReplacements
+     * @param  array<string, string>  $hookReplacements
      * @return list<FuncCall>
      */
     public static function findInvalidDescribeHooks(Closure $closure, array $hookReplacements): array

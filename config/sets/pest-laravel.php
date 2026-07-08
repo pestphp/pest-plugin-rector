@@ -16,7 +16,7 @@ use RectorPest\Rules\UseToBeStudlyCaseRector;
  * - Converting Illuminate\Support\Str:: equality checks to Pest string case matchers
  */
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 
     // String case matchers (requires illuminate/support)
     $rectorConfig->rule(UseToBeSnakeCaseRector::class);

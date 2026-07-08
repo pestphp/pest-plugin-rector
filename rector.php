@@ -7,9 +7,9 @@ use Rector\Php55\Rector\String_\StringClassNameToClassConstantRector;
 
 return RectorConfig::configure()
     ->withPaths([
-        __DIR__ . '/config',
-        __DIR__ . '/src',
-        __DIR__ . '/tests',
+        __DIR__.'/config',
+        __DIR__.'/src',
+        __DIR__.'/tests',
     ])
     ->withRootFiles()
     ->withSkip([
@@ -18,7 +18,7 @@ return RectorConfig::configure()
         '*/Expected/*',
 
         StringClassNameToClassConstantRector::class => [
-            __DIR__ . '/config',
+            __DIR__.'/config',
         ],
     ])
     ->withImportNames(removeUnusedImports: true)

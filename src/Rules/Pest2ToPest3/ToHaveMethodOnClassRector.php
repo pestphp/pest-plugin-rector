@@ -14,9 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts toHaveMethod/toHaveMethods to work with class names instead of objects
- */
 final class ToHaveMethodOnClassRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -51,7 +48,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +66,7 @@ CODE_SAMPLE
         }
 
         $expectArg = $this->getExpectArgument($node);
-        if (!$expectArg instanceof Expr) {
+        if (! $expectArg instanceof Expr) {
             return null;
         }
 

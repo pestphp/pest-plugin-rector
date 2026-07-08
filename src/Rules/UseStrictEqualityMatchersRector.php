@@ -16,12 +16,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts strict equality expressions to Pest's toBe() matcher.
- *
- * Before: expect($a === $b)->toBeTrue()
- * After:  expect($a)->toBe($b)
- */
 final class UseStrictEqualityMatchersRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -102,14 +96,8 @@ CODE_SAMPLE
         $left = $comparison->left;
         $right = $comparison->right;
 
-        // Update expect() to use the left side
         $expectCall->args[0] = new Arg($left);
 
-        // Determine if we need ->not
-        // $a === $b + toBeTrue = toBe
-        // $a === $b + toBeFalse = not->toBe
-        // $a !== $b + toBeTrue = not->toBe
-        // $a !== $b + toBeFalse = toBe
         $needsNot = ($isNotIdentical && $methodName === 'toBeTrue')
             || ($isIdentical && $methodName === 'toBeFalse');
 

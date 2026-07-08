@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts is_nan() checks to Pest's toBeNan() matcher.
- *
- * Before: expect(is_nan($value))->toBeTrue()
- * After:  expect($value)->toBeNan()
- */
 final class UseToBeNanRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -56,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

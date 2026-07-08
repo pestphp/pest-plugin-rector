@@ -16,9 +16,6 @@ use RectorPest\ValueObject\PestSemanticIssue;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Replaces invalid describe-scoped beforeAll/afterAll hooks with supported per-test hooks.
- */
 final class ConvertBeforeAllInDescribeRector extends AbstractSemanticPestRector
 {
     /**
@@ -72,7 +69,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FuncCall $node
+     * @param  FuncCall  $node
      */
     public function refactor(Node $node): ?Node
     {

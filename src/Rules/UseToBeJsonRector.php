@@ -18,12 +18,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts json_decode() null checks to Pest's toBeJson() matcher.
- *
- * Before: expect(json_decode($string) !== null)->toBeTrue()
- * After:  expect($string)->toBeJson()
- */
 final class UseToBeJsonRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -90,7 +84,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Check for json_decode($x) !== null or json_decode($x) === null
         $comparison = $arg->value;
         $isNotIdentical = $comparison instanceof NotIdentical;
         $isIdentical = $comparison instanceof Identical;
@@ -118,15 +111,9 @@ CODE_SAMPLE
             return null;
         }
 
-        // Determine if result should be positive (toBeJson) or negative (not->toBeJson)
-        // json_decode($x) !== null + toBeTrue = valid JSON = toBeJson
-        // json_decode($x) !== null + toBeFalse = invalid JSON = not->toBeJson
-        // json_decode($x) === null + toBeTrue = invalid JSON = not->toBeJson
-        // json_decode($x) === null + toBeFalse = valid JSON = toBeJson
         $expectsValidJson = ($isNotIdentical && $methodName === 'toBeTrue')
             || ($isIdentical && $methodName === 'toBeFalse');
 
-        // Update expect() to use the string directly
         $expectCall->args[0] = new Arg($stringArg->value);
 
         if (! $expectsValidJson) {
@@ -141,12 +128,9 @@ CODE_SAMPLE
     private function isNull(Node $node): bool
     {
         return $node instanceof ConstFetch
-            && strtolower($node->name->toString()) === 'null';
+            && mb_strtolower($node->name->toString()) === 'null';
     }
 
-    /**
-     * Extract json_decode() call from a comparison with null.
-     */
     private function extractJsonDecodeCall(Identical|NotIdentical $comparison): ?FuncCall
     {
         $funcCall = null;

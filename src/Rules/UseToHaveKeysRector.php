@@ -15,9 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts chained toHaveKey() calls to single toHaveKeys() matcher
- */
 final class UseToHaveKeysRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -52,7 +49,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -68,13 +65,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // Collect all toHaveKey calls in the chain
         $keys = [];
         $current = $node;
         $firstCall = null;
 
         while ($current instanceof MethodCall && $this->isName($current->name, 'toHaveKey')) {
-            // Skip if any of the toHaveKey calls has a ->not modifier
             if ($this->hasNotModifier($current)) {
                 return null;
             }
@@ -88,18 +83,15 @@ CODE_SAMPLE
                 return null;
             }
 
-            // Only support string literal keys for now
             if (! $arg->value instanceof String_) {
                 return null;
             }
 
-            // Prepend to maintain order (we're walking backwards)
             array_unshift($keys, $arg->value);
             $firstCall = $current;
             $current = $current->var;
         }
 
-        // We need at least 2 toHaveKey calls to make this transformation worthwhile
         if (count($keys) < 2) {
             return null;
         }

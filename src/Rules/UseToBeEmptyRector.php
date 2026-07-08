@@ -17,14 +17,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts empty() checks and count-zero comparisons to Pest's toBeEmpty() matcher.
- *
- * Before: expect(empty($value))->toBeTrue()
- * Before: expect(count($array))->toBe(0)
- * Before: expect($array)->toHaveCount(0)
- * After:  expect($value)->toBeEmpty()
- */
 final class UseToBeEmptyRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -63,7 +55,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -71,7 +63,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Pattern 1: expect($array)->toHaveCount(0)
         if ($this->isName($node->name, 'toHaveCount') && $this->hasZeroArg($node)) {
             $node->name = new Identifier('toBeEmpty');
             $node->args = [];
@@ -79,7 +70,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        // Pattern 2: expect(count($array))->toBe(0) or ->toEqual(0)
         if ($this->isNames($node->name, ['toBe', 'toEqual']) && $this->hasZeroArg($node)) {
             $expectCall = $this->getExpectFuncCall($node);
             if (! $expectCall instanceof FuncCall) {
@@ -111,7 +101,6 @@ CODE_SAMPLE
             return $node;
         }
 
-        // Pattern 3: expect(empty($value))->toBeTrue() / toBeFalse()
         if ($this->isNames($node->name, ['toBeTrue', 'toBeFalse'])) {
             $expectCall = $this->getExpectFuncCall($node);
             if (! $expectCall instanceof FuncCall) {

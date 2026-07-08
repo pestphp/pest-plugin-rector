@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts in_array() checks to Pest's toContain() matcher.
- *
- * Before: expect(in_array($item, $array))->toBeTrue()
- * After:  expect($array)->toContain($item)
- */
 final class UseToContainRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +63,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // in_array requires at least 2 arguments: needle, haystack
         if (count($funcCall->args) < 2) {
             return null;
         }

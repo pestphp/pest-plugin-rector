@@ -18,9 +18,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts consecutive toHaveProperty() assertions with values on the same object to toMatchObject()
- */
 final class UseToMatchObjectRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -173,8 +170,6 @@ CODE_SAMPLE
     }
 
     /**
-     * Extract property name and value from toHaveProperty('key', 'value') call.
-     *
      * @return array{key: Expr, value: Expr}|null
      */
     private function extractPropertyWithValue(MethodCall $methodCall): ?array

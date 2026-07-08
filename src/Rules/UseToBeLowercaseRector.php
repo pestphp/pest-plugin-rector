@@ -14,9 +14,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts lowercase string checks to toBeLowercase() matcher
- */
 final class UseToBeLowercaseRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -51,7 +48,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -73,7 +70,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // Pattern 1: strtolower($value) === $value
         if ($this->isStrtolower($expectArg->left)) {
             $strtoLowerCall = $expectArg->left;
             if ($this->nodeComparator->areNodesEqual($this->getFirstArg($strtoLowerCall), $expectArg->right)) {
@@ -83,11 +79,11 @@ CODE_SAMPLE
 
                 $expectCall->args = [new Arg($expectArg->right)];
                 $node->name = new Identifier('toBeLowercase');
+
                 return $node;
             }
         }
 
-        // Pattern 2: $value === strtolower($value)
         if ($this->isStrtolower($expectArg->right)) {
             $strtoLowerCall = $expectArg->right;
             if ($this->nodeComparator->areNodesEqual($expectArg->left, $this->getFirstArg($strtoLowerCall))) {
@@ -97,6 +93,7 @@ CODE_SAMPLE
 
                 $expectCall->args = [new Arg($expectArg->left)];
                 $node->name = new Identifier('toBeLowercase');
+
                 return $node;
             }
         }

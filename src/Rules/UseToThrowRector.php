@@ -24,9 +24,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts try/catch patterns in tests to Pest's toThrow() matcher
- */
 final class UseToThrowRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -67,7 +64,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FuncCall $node
+     * @param  FuncCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -144,7 +141,7 @@ CODE_SAMPLE
         $exceptionClass = $catch->types[0];
         $message = $this->extractMessageAssertion($catch);
 
-        if ($catch->stmts !== [] && !$message instanceof Expr) {
+        if ($catch->stmts !== [] && ! $message instanceof Expr) {
             return null;
         }
 
@@ -163,10 +160,7 @@ CODE_SAMPLE
     }
 
     /**
-     * Build the expression for the try block body
-     */
-    /**
-     * @param array<Node\Stmt> $stmts
+     * @param  array<Node\Stmt>  $stmts
      */
     private function buildTryExpression(array $stmts): Expr
     {
@@ -183,9 +177,6 @@ CODE_SAMPLE
         );
     }
 
-    /**
-     * Extract message from expect($e->getMessage())->toBe('...')
-     */
     private function extractMessageAssertion(Catch_ $catch): ?Expr
     {
         if ($catch->stmts === []) {
@@ -232,7 +223,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (!$catch->var instanceof Variable) {
+        if (! $catch->var instanceof Variable) {
             return null;
         }
 

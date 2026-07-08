@@ -13,9 +13,6 @@ use RectorPest\ValueObject\PestSemanticIssue;
 use RectorPest\ValueObject\PestSemanticSafetyLevel;
 use RectorPest\ValueObject\PestSemanticSeverity;
 
-/**
- * Canonical semantic issue registry for rector-pest and future PestStan interoperability.
- */
 final class PestSemanticIssues
 {
     public const STATIC_TEST_CLOSURE = 'pest.test.staticClosure';
@@ -34,6 +31,54 @@ final class PestSemanticIssues
 
     /** @var array<string, PestSemanticIssue>|null */
     private static ?array $issues = null;
+
+    /**
+     * @return array<string, PestSemanticIssue>
+     */
+    public static function all(): array
+    {
+        return self::issues();
+    }
+
+    public static function get(string $identifier): ?PestSemanticIssue
+    {
+        return self::issues()[$identifier] ?? null;
+    }
+
+    public static function staticTestClosure(): PestSemanticIssue
+    {
+        return self::issues()[self::STATIC_TEST_CLOSURE];
+    }
+
+    public static function invalidRepeatValue(): PestSemanticIssue
+    {
+        return self::issues()[self::INVALID_REPEAT_VALUE];
+    }
+
+    public static function beforeAllInDescribe(): PestSemanticIssue
+    {
+        return self::issues()[self::BEFORE_ALL_IN_DESCRIBE];
+    }
+
+    public static function afterAllInDescribe(): PestSemanticIssue
+    {
+        return self::issues()[self::AFTER_ALL_IN_DESCRIBE];
+    }
+
+    public static function emptyTestClosure(): PestSemanticIssue
+    {
+        return self::issues()[self::EMPTY_TEST_CLOSURE];
+    }
+
+    public static function redundantExpectation(): PestSemanticIssue
+    {
+        return self::issues()[self::REDUNDANT_EXPECTATION];
+    }
+
+    public static function impossibleExpectation(): PestSemanticIssue
+    {
+        return self::issues()[self::IMPOSSIBLE_EXPECTATION];
+    }
 
     /**
      * @return array<string, PestSemanticIssue>
@@ -167,53 +212,5 @@ final class PestSemanticIssues
         ];
 
         return self::$issues;
-    }
-
-    /**
-     * @return array<string, PestSemanticIssue>
-     */
-    public static function all(): array
-    {
-        return self::issues();
-    }
-
-    public static function get(string $identifier): ?PestSemanticIssue
-    {
-        return self::issues()[$identifier] ?? null;
-    }
-
-    public static function staticTestClosure(): PestSemanticIssue
-    {
-        return self::issues()[self::STATIC_TEST_CLOSURE];
-    }
-
-    public static function invalidRepeatValue(): PestSemanticIssue
-    {
-        return self::issues()[self::INVALID_REPEAT_VALUE];
-    }
-
-    public static function beforeAllInDescribe(): PestSemanticIssue
-    {
-        return self::issues()[self::BEFORE_ALL_IN_DESCRIBE];
-    }
-
-    public static function afterAllInDescribe(): PestSemanticIssue
-    {
-        return self::issues()[self::AFTER_ALL_IN_DESCRIBE];
-    }
-
-    public static function emptyTestClosure(): PestSemanticIssue
-    {
-        return self::issues()[self::EMPTY_TEST_CLOSURE];
-    }
-
-    public static function redundantExpectation(): PestSemanticIssue
-    {
-        return self::issues()[self::REDUNDANT_EXPECTATION];
-    }
-
-    public static function impossibleExpectation(): PestSemanticIssue
-    {
-        return self::issues()[self::IMPOSSIBLE_EXPECTATION];
     }
 }

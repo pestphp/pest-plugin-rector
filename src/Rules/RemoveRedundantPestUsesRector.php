@@ -25,14 +25,8 @@ use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Throwable;
 
-/**
- * Removes local Pest uses that are provably supplied by tests/Pest.php.
- */
 final class RemoveRedundantPestUsesRector extends AbstractRector
 {
-    /** @var array<string, list<array{classNames: list<string>, paths: list<string>}>> */
-    private array $globalUsesByPestFile = [];
-
     /** @var array<string, true> */
     private const GLOBAL_CHAIN_TOLERATED_METHODS = [
         'extend' => true,
@@ -40,10 +34,12 @@ final class RemoveRedundantPestUsesRector extends AbstractRector
         'uses' => true,
     ];
 
+    /** @var array<string, list<array{classNames: list<string>, paths: list<string>}>> */
+    private array $globalUsesByPestFile = [];
+
     public function __construct(
         private readonly SimplePhpParser $simplePhpParser
-    ) {
-    }
+    ) {}
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
@@ -80,7 +76,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FileNode $node
+     * @param  FileNode  $node
      */
     public function refactor(Node $node): ?FileNode
     {
@@ -103,8 +99,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Stmt> $statements
-     * @param array<string, true> $globallyAppliedClassMap
+     * @param  array<Stmt>  $statements
+     * @param  array<string, true>  $globallyAppliedClassMap
      * @return array{0: array<Stmt>, 1: bool}
      */
     private function refactorStatements(array $statements, array $globallyAppliedClassMap): array
@@ -145,7 +141,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<string, true> $globallyAppliedClassMap
+     * @param  array<string, true>  $globallyAppliedClassMap
      */
     private function refactorLocalUseStatement(Expression $statement, array $globallyAppliedClassMap): ?Expression
     {
@@ -197,7 +193,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $methodName = strtolower($expr->name->toString());
+        $methodName = mb_strtolower($expr->name->toString());
         if (! in_array($methodName, ['use', 'uses'], true)) {
             return null;
         }
@@ -215,7 +211,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $expr->name instanceof Identifier || strtolower($expr->name->toString()) !== 'class') {
+        if (! $expr->name instanceof Identifier || mb_strtolower($expr->name->toString()) !== 'class') {
             return null;
         }
 
@@ -232,7 +228,7 @@ CODE_SAMPLE
             return [];
         }
 
-        $pestFile = $testDirectory . DIRECTORY_SEPARATOR . 'Pest.php';
+        $pestFile = $testDirectory.DIRECTORY_SEPARATOR.'Pest.php';
         if (! is_file($pestFile) || $this->pathsAreEqual($currentFilePath, $pestFile)) {
             return [];
         }
@@ -267,7 +263,7 @@ CODE_SAMPLE
         $directory = dirname($currentFilePath);
 
         while (true) {
-            if (strtolower(basename($directory)) === 'tests') {
+            if (mb_strtolower(basename($directory)) === 'tests') {
                 return $directory;
             }
 
@@ -346,7 +342,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $methodName = strtolower($current->name->toString());
+            $methodName = mb_strtolower($current->name->toString());
             if (! isset(self::GLOBAL_CHAIN_TOLERATED_METHODS[$methodName])) {
                 $current = $current->var;
 
@@ -367,7 +363,7 @@ CODE_SAMPLE
             $current = $current->var;
         }
 
-        if (! $current instanceof FuncCall || ! $current->name instanceof Name || strtolower($current->name->toString()) !== 'pest') {
+        if (! $current instanceof FuncCall || ! $current->name instanceof Name || mb_strtolower($current->name->toString()) !== 'pest') {
             return null;
         }
 
@@ -382,7 +378,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Arg|Node\VariadicPlaceholder> $args
+     * @param  array<Arg|Node\VariadicPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticClassNames(array $args): array
@@ -403,7 +399,7 @@ CODE_SAMPLE
                 return [];
             }
 
-            if (strtolower($classConstFetch->name->toString()) !== 'class') {
+            if (mb_strtolower($classConstFetch->name->toString()) !== 'class') {
                 return [];
             }
 
@@ -417,14 +413,14 @@ CODE_SAMPLE
     {
         $resolvedName = $name->getAttribute('resolvedName');
         if ($resolvedName instanceof Name) {
-            return ltrim($resolvedName->toString(), '\\');
+            return mb_ltrim($resolvedName->toString(), '\\');
         }
 
         return $this->getName($name);
     }
 
     /**
-     * @param array<Arg|Node\VariadicPlaceholder> $args
+     * @param  array<Arg|Node\VariadicPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticPaths(array $args): array
@@ -445,7 +441,7 @@ CODE_SAMPLE
                 return [];
             }
 
-            $path = trim($path, '/');
+            $path = mb_trim($path, '/');
 
             if ($path === '' || preg_match('#(^|/)\.\.(/|$)|[*?\[\]{}]#', $path) === 1 || str_contains($path, ':')) {
                 return [];
@@ -459,20 +455,20 @@ CODE_SAMPLE
 
     private function isStaticName(Identifier|Expr $name, string $expected): bool
     {
-        return $name instanceof Identifier && strtolower($name->toString()) === $expected;
+        return $name instanceof Identifier && mb_strtolower($name->toString()) === $expected;
     }
 
     private function relativePath(string $directory, string $filePath): ?string
     {
-        $normalizedDirectory = rtrim($this->normalizePath($directory), '/');
+        $normalizedDirectory = mb_rtrim($this->normalizePath($directory), '/');
         $normalizedFilePath = $this->normalizePath($filePath);
-        $prefix = $normalizedDirectory . '/';
+        $prefix = $normalizedDirectory.'/';
 
         if (! $this->startsWithPath($normalizedFilePath, $prefix)) {
             return null;
         }
 
-        return substr($normalizedFilePath, strlen($prefix));
+        return mb_substr($normalizedFilePath, mb_strlen($prefix));
     }
 
     private function pathCoversFile(string $configuredPath, string $relativeFilePath): bool
@@ -481,7 +477,7 @@ CODE_SAMPLE
             return true;
         }
 
-        return $this->startsWithPath($relativeFilePath, rtrim($configuredPath, '/') . '/');
+        return $this->startsWithPath($relativeFilePath, mb_rtrim($configuredPath, '/').'/');
     }
 
     private function pathsAreEqual(string $first, string $second): bool
@@ -495,7 +491,7 @@ CODE_SAMPLE
     private function startsWithPath(string $path, string $prefix): bool
     {
         if (DIRECTORY_SEPARATOR === '\\') {
-            return str_starts_with(strtolower($path), strtolower($prefix));
+            return str_starts_with(mb_strtolower($path), mb_strtolower($prefix));
         }
 
         return str_starts_with($path, $prefix);

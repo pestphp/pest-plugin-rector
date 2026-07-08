@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts is_infinite() checks to Pest's toBeInfinite() matcher.
- *
- * Before: expect(is_infinite($value))->toBeTrue()
- * After:  expect($value)->toBeInfinite()
- */
 final class UseToBeInfiniteRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -56,7 +50,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

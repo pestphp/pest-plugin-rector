@@ -11,9 +11,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Replaces deprecated ->tap() method with ->defer() for Pest v3
- */
 final class TapToDeferRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -46,7 +43,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

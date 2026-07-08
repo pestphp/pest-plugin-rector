@@ -64,7 +64,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -167,7 +167,7 @@ CODE_SAMPLE
             return false;
         }
 
-        $segment = substr($this->getCurrentFileContents(), $startFilePos, $endFilePos - $startFilePos + 1);
+        $segment = mb_substr($this->getCurrentFileContents(), $startFilePos, $endFilePos - $startFilePos + 1);
 
         return str_contains($segment, '//') || str_contains($segment, '/*');
     }

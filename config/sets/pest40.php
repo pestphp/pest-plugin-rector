@@ -11,5 +11,5 @@ use Rector\Config\RectorConfig;
  * with minimal code changes. Rules will be added as migration patterns emerge.
  */
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 };

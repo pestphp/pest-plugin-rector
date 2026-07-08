@@ -18,9 +18,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts comparison expressions to dedicated comparison matchers
- */
 final class SimplifyComparisonExpectationsRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -59,7 +56,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -77,6 +74,7 @@ CODE_SAMPLE
         }
 
         $expectArg = $this->getExpectArgument($node);
+
         return $this->handleComparison($expectArg, $expectCall, $node);
     }
 

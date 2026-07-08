@@ -4,16 +4,13 @@ declare(strict_types=1);
 
 namespace RectorPest\ValueObject;
 
-/**
- * Metadata describing a semantic issue that can be auto-fixed by a Rector rule.
- */
 final readonly class PestSemanticIssue
 {
     public const INTEROPERABILITY_VERSION = '1.0.0';
 
     /**
-     * @param non-empty-list<string> $diagnosticIdentifiers
-     * @param list<string> $tags
+     * @param  non-empty-list<string>  $diagnosticIdentifiers
+     * @param  list<string>  $tags
      */
     public function __construct(
         public string $identifier,
@@ -31,8 +28,7 @@ final readonly class PestSemanticIssue
         public string $interoperabilityVersion = self::INTEROPERABILITY_VERSION,
         public ?string $issueFamily = null,
         public ?string $semanticGroup = null,
-    ) {
-    }
+    ) {}
 
     public function canonicalDiagnosticIdentifier(): string
     {

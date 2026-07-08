@@ -13,9 +13,6 @@ use RectorPest\ValueObject\PestSemanticIssue;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Removes static modifiers from Pest callbacks when instance binding is required.
- */
 final class RemoveStaticTestClosureRector extends AbstractSemanticPestRector
 {
     /** @var list<string> */
@@ -60,7 +57,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param FuncCall $node
+     * @param  FuncCall  $node
      */
     public function refactor(Node $node): ?Node
     {

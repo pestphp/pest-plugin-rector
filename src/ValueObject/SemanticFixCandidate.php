@@ -6,23 +6,19 @@ namespace RectorPest\ValueObject;
 
 use RectorPest\AbstractSemanticPestRector;
 
-/**
- * Represents a possible Rector-based fix for a semantic issue.
- */
 final readonly class SemanticFixCandidate
 {
     /**
-     * @param class-string<AbstractSemanticPestRector> $rectorClass
+     * @param  class-string<AbstractSemanticPestRector>  $rectorClass
      */
     public function __construct(
         public PestSemanticIssue $issue,
         public string $rectorClass,
         public string $matchedDiagnosticIdentifier,
-    ) {
-    }
+    ) {}
 
     /**
-     * @param class-string<AbstractSemanticPestRector> $rectorClass
+     * @param  class-string<AbstractSemanticPestRector>  $rectorClass
      */
     public static function fromIssue(PestSemanticIssue $issue, string $rectorClass, string $matchedDiagnosticIdentifier): self
     {

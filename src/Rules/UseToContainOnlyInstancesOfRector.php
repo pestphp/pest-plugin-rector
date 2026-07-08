@@ -15,9 +15,6 @@ use RuntimeException;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts ->each->toBeInstanceOf() pattern to toContainOnlyInstancesOf()
- */
 final class UseToContainOnlyInstancesOfRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -50,7 +47,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -70,21 +67,17 @@ CODE_SAMPLE
             return null;
         }
 
-        // Check if there's an ->each property fetch in the chain
         if (! $this->hasEachModifier($node)) {
             return null;
         }
 
-        // Get the class argument
         $classArg = $node->args[0];
         if (! $classArg instanceof Arg) {
             return null;
         }
 
-        // Remove the 'each' property fetch from the chain
         $node->var = $this->removeEachFromChain($node->var);
 
-        // Replace toBeInstanceOf() with toContainOnlyInstancesOf()
         $node->name = new Identifier('toContainOnlyInstancesOf');
 
         return $node;

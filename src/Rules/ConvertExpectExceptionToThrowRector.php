@@ -18,9 +18,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts PHPUnit expectException() patterns to Pest's toThrow() matcher.
- */
 final class ConvertExpectExceptionToThrowRector extends AbstractRector
 {
     /**
@@ -113,9 +110,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Node\Stmt> $stmts
-      * Supports both `expectException()`-then-message and message-first ordering when the
-      * pattern stays local to consecutive expectation setup calls followed by one action.
+     * @param  array<Node\Stmt>  $stmts
      * @return array{action: Expr, consumed: int, exception: Expr, message: Expr|null}|null
      */
     private function collectConversion(array $stmts, int $startPos): ?array

@@ -18,18 +18,11 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts uses() and pest()->uses() to pest()->extend() for classes and pest()->use() for traits.
- *
- * Before: uses(TestCase::class, RefreshDatabase::class)->in('Feature')
- * After:  pest()->extend(TestCase::class)->use(RefreshDatabase::class)->in('Feature')
- */
 final class UsesToExtendRector extends AbstractRector
 {
     public function __construct(
         private readonly ReflectionProvider $reflectionProvider
-    ) {
-    }
+    ) {}
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
@@ -65,22 +58,17 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall|FuncCall $node
+     * @param  MethodCall|FuncCall  $node
      */
     public function refactor(Node $node): ?Node
     {
-        // Handle standalone uses() function call
         if ($node instanceof FuncCall) {
             return $this->refactorFuncCall($node);
         }
 
-        // Handle pest()->uses() method call chain
         return $this->refactorMethodCall($node);
     }
 
-    /**
-     * Handle standalone uses() function: uses(X)->in('Feature')
-     */
     private function refactorFuncCall(FuncCall $node): ?Node
     {
         if (! $this->isName($node, 'uses')) {
@@ -94,48 +82,37 @@ CODE_SAMPLE
         return $this->transformUsesArgs($node->args, []);
     }
 
-    /**
-     * Handle uses() as part of a method chain: uses(X)->in('Feature')
-     * This catches the outermost MethodCall when uses() has chained methods
-     */
     private function refactorMethodCall(MethodCall $node): ?Node
     {
-        // Check if this chain starts with a uses() FuncCall
         $usesFuncCall = $this->findUsesFuncCallInChain($node);
         if ($usesFuncCall instanceof FuncCall) {
-            // Collect the method chain from node back to uses()
             $methodsAfter = $this->collectMethodsFromFuncCall($node);
+
             return $this->transformUsesArgs($usesFuncCall->args, $methodsAfter);
         }
 
-        // Handle pest()->uses() chains
         $usesCall = $this->findUsesCallInChain($node);
         if (! $usesCall instanceof MethodCall) {
             return null;
         }
 
-        // Make sure this is the outermost call
         if (! $this->isDirectUsesCall($node) && ! $this->hasUsesInChain($node)) {
             return null;
         }
 
-        // For direct uses() call: pest()->uses(X)
         if ($this->isName($node->name, 'uses') && $this->isPestChain($node)) {
             return $this->transformPestUsesCall($node, []);
         }
 
-        // For chained: pest()->uses(X)->in('Feature') - only process the outermost
         if ($this->hasUsesInChain($node)) {
             $methodsAfter = $this->collectMethodsUntilUses($node);
+
             return $this->transformPestUsesCall($usesCall, $methodsAfter);
         }
 
         return null;
     }
 
-    /**
-     * Find uses() FuncCall at the root of a method chain
-     */
     private function findUsesFuncCallInChain(MethodCall $node): ?FuncCall
     {
         $current = $node->var;
@@ -152,8 +129,6 @@ CODE_SAMPLE
     }
 
     /**
-     * Collect all methods in a chain that starts with uses() FuncCall
-     *
      * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>
      */
     private function collectMethodsFromFuncCall(MethodCall $outermost): array
@@ -169,15 +144,12 @@ CODE_SAMPLE
             $current = $current->var instanceof MethodCall ? $current->var : null;
         }
 
-        // Reverse to get correct order (from uses() outward)
         return array_reverse($methods);
     }
 
     /**
-     * Transform uses() arguments into pest()->extend()/use() calls
-     *
-     * @param array<Arg|VariadicPlaceholder> $args
-     * @param array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}> $methodsAfter
+     * @param  array<Arg|VariadicPlaceholder>  $args
+     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>  $methodsAfter
      */
     private function transformUsesArgs(array $args, array $methodsAfter): ?Node
     {
@@ -185,30 +157,24 @@ CODE_SAMPLE
             return null;
         }
 
-        // Separate classes and traits
         [$classes, $traits] = $this->separateClassesAndTraits($args);
 
         if ($classes === [] && $traits === []) {
             return null;
         }
 
-        // Create pest() function call
         $pestCall = new FuncCall(new Name('pest'));
 
-        // Build the new chain starting from pest()
         $result = $pestCall;
 
-        // Add extend() for classes first
         if ($classes !== []) {
             $result = new MethodCall($result, 'extend', $classes);
         }
 
-        // Add use() for traits
         if ($traits !== []) {
             $result = new MethodCall($result, 'use', $traits);
         }
 
-        // Re-add the methods that came after uses() (like ->in())
         foreach ($methodsAfter as $method) {
             $result = new MethodCall($result, $method['name'], $method['args']);
         }
@@ -216,17 +182,11 @@ CODE_SAMPLE
         return $result;
     }
 
-    /**
-     * Check if node is a direct uses() call on pest()
-     */
     private function isDirectUsesCall(MethodCall $node): bool
     {
         return $this->isName($node->name, 'uses') && $this->isPestChain($node);
     }
 
-    /**
-     * Check if uses() exists somewhere in the var chain
-     */
     private function hasUsesInChain(MethodCall $node): bool
     {
         $current = $node->var;
@@ -242,17 +202,12 @@ CODE_SAMPLE
         return false;
     }
 
-    /**
-     * Find the uses() call anywhere in the chain
-     */
     private function findUsesCallInChain(MethodCall $node): ?MethodCall
     {
-        // First check if this node is uses()
         if ($this->isName($node->name, 'uses') && $this->isPestChain($node)) {
             return $node;
         }
 
-        // Search in the var chain
         $current = $node->var;
 
         while ($current instanceof MethodCall) {
@@ -267,8 +222,6 @@ CODE_SAMPLE
     }
 
     /**
-     * Collect methods from outermost until uses() (not including uses)
-     *
      * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>
      */
     private function collectMethodsUntilUses(MethodCall $outermost): array
@@ -288,14 +241,11 @@ CODE_SAMPLE
             $current = $current->var instanceof MethodCall ? $current->var : null;
         }
 
-        // Reverse to get correct order
         return array_reverse($methods);
     }
 
     /**
-     * Transform the pest()->uses() call into extend()/use() calls
-     *
-     * @param array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}> $methodsAfter
+     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>  $methodsAfter
      */
     private function transformPestUsesCall(MethodCall $usesCall, array $methodsAfter): ?Node
     {
@@ -303,33 +253,27 @@ CODE_SAMPLE
             return null;
         }
 
-        // Separate classes and traits
         [$classes, $traits] = $this->separateClassesAndTraits($usesCall->args);
 
         if ($classes === [] && $traits === []) {
             return null;
         }
 
-        // Get the pest() function call
         $pestCall = $this->getPestFuncCall($usesCall);
         if (! $pestCall instanceof FuncCall) {
             return null;
         }
 
-        // Build the new chain starting from pest()
         $result = $pestCall;
 
-        // Add extend() for classes first
         if ($classes !== []) {
             $result = new MethodCall($result, 'extend', $classes);
         }
 
-        // Add use() for traits
         if ($traits !== []) {
             $result = new MethodCall($result, 'use', $traits);
         }
 
-        // Re-add the methods that came after uses() (like ->in())
         foreach ($methodsAfter as $method) {
             $result = new MethodCall($result, $method['name'], $method['args']);
         }
@@ -338,9 +282,7 @@ CODE_SAMPLE
     }
 
     /**
-     * Separate arguments into classes and traits
-     *
-     * @param array<Arg|VariadicPlaceholder> $args
+     * @param  array<Arg|VariadicPlaceholder>  $args
      * @return array{0: array<Arg>, 1: array<Arg>}
      */
     private function separateClassesAndTraits(array $args): array
@@ -373,7 +315,6 @@ CODE_SAMPLE
                     $classes[] = new Arg($classConstFetch);
                 }
             } else {
-                // If we can't resolve, default to class (extend)
                 $classes[] = new Arg($classConstFetch);
             }
         }
@@ -381,9 +322,6 @@ CODE_SAMPLE
         return [$classes, $traits];
     }
 
-    /**
-     * Check if a method call is part of a pest() chain
-     */
     private function isPestChain(MethodCall $methodCall): bool
     {
         $current = $methodCall->var;
@@ -399,9 +337,6 @@ CODE_SAMPLE
         return false;
     }
 
-    /**
-     * Get the pest() function call from a method chain
-     */
     private function getPestFuncCall(MethodCall $methodCall): ?FuncCall
     {
         $current = $methodCall->var;

@@ -15,9 +15,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts chained toHaveProperty() calls to single toHaveProperties() matcher
- */
 final class UseToHavePropertiesRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -52,7 +49,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -68,13 +65,11 @@ CODE_SAMPLE
             return null;
         }
 
-        // Collect all toHaveProperty calls in the chain
         $properties = [];
         $current = $node;
         $firstCall = null;
 
         while ($current instanceof MethodCall && $this->isName($current->name, 'toHaveProperty')) {
-            // Skip if any of the toHaveProperty calls has a ->not modifier
             if ($this->hasNotModifier($current)) {
                 return null;
             }
@@ -83,7 +78,6 @@ CODE_SAMPLE
                 return null;
             }
 
-            // Only handle calls with just the property name (no value check)
             if (count($current->args) > 1) {
                 return null;
             }
@@ -93,18 +87,15 @@ CODE_SAMPLE
                 return null;
             }
 
-            // Only support string literal property names for now
             if (! $arg->value instanceof String_) {
                 return null;
             }
 
-            // Prepend to maintain order (we're walking backwards)
             array_unshift($properties, $arg->value);
             $firstCall = $current;
             $current = $current->var;
         }
 
-        // We need at least 2 toHaveProperty calls to make this transformation worthwhile
         if (count($properties) < 2) {
             return null;
         }

@@ -19,9 +19,6 @@ use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts multiple array element assertions to toMatchArray()
- */
 final class UseToMatchArrayRector extends AbstractRector
 {
     // @codeCoverageIgnoreStart
@@ -63,7 +60,6 @@ CODE_SAMPLE
 
         $hasChanged = false;
 
-        // Find consecutive expect() calls on the same array with different keys
         $newStmts = [];
         $i = 0;
 
@@ -73,6 +69,7 @@ CODE_SAMPLE
             if (! $stmt instanceof Expression) {
                 $newStmts[] = $stmt;
                 $i++;
+
                 continue;
             }
 
@@ -81,14 +78,15 @@ CODE_SAMPLE
             if (! $firstExpect instanceof MethodCall || ! $this->isExpectChain($firstExpect)) {
                 $newStmts[] = $stmt;
                 $i++;
+
                 continue;
             }
 
-            // Check if this is an expect on an array element
             $firstArray = $this->getArrayFromExpect($firstExpect);
-            if (!$firstArray instanceof Node) {
+            if (! $firstArray instanceof Node) {
                 $newStmts[] = $stmt;
                 $i++;
+
                 continue;
             }
 
@@ -96,16 +94,16 @@ CODE_SAMPLE
             if ($firstArrayType->isArray()->no()) {
                 $newStmts[] = $stmt;
                 $i++;
+
                 continue;
             }
 
-            // Collect all consecutive expectations on the same array
             $expectations = [
                 [
                     'key' => $this->getArrayKey($this->getExpectArgument($firstExpect)),
                     'value' => $this->getExpectedValue($firstExpect),
                     'method' => $this->getAssertionMethod($firstExpect),
-                ]
+                ],
             ];
 
             $j = $i + 1;
@@ -125,12 +123,10 @@ CODE_SAMPLE
 
                 $nextArray = $this->getArrayFromExpect($nextExpect);
 
-                // Must be the same array variable
-                if (!$nextArray instanceof Expr || ! $this->nodeComparator->areNodesEqual($firstArray, $nextArray)) {
+                if (! $nextArray instanceof Expr || ! $this->nodeComparator->areNodesEqual($firstArray, $nextArray)) {
                     break;
                 }
 
-                // Must use toBe() or toEqual()
                 $method = $this->getAssertionMethod($nextExpect);
                 if ($method === null || ! in_array($method, ['toBe', 'toEqual'], true)) {
                     break;
@@ -145,12 +141,10 @@ CODE_SAMPLE
                 $j++;
             }
 
-            // Need at least 2 expectations to make this worthwhile
             if (count($expectations) >= 2 && $this->allValidExpectations($expectations)) {
-                // Create toMatchArray call
                 $arrayItems = [];
                 foreach ($expectations as $expectation) {
-                    if (!$expectation['value'] instanceof Expr) {
+                    if (! $expectation['value'] instanceof Expr) {
                         continue;
                     }
 
@@ -162,7 +156,6 @@ CODE_SAMPLE
 
                 $matchArray = new Array_($arrayItems);
 
-                // Create new expect($array)->toMatchArray([...])
                 $expectCall = $this->getExpectFuncCall($firstExpect);
                 if ($expectCall instanceof FuncCall) {
                     $expectCall->args = [new Arg($firstArray)];
@@ -241,7 +234,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<array{key: Expr|null, value: Expr|null, method: string|null}> $expectations
+     * @param  array<array{key: Expr|null, value: Expr|null, method: string|null}>  $expectations
      */
     private function allValidExpectations(array $expectations): bool
     {

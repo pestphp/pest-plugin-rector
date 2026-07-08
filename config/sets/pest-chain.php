@@ -18,7 +18,7 @@ use RectorPest\Rules\EnsureTypeChecksFirstRector;
  * to maximize the opportunities for chaining.
  */
 return static function (RectorConfig $rectorConfig): void {
-    $rectorConfig->import(__DIR__ . '/../config.php');
+    $rectorConfig->import(__DIR__.'/../config.php');
 
     // chained fluent calls only in files where it makes changes.
     $rectorConfig->rule(ChainExpectCallsRector::class);      // Merges separate expect() calls

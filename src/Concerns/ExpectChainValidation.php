@@ -14,19 +14,11 @@ use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 
-/**
- * Shared validation and build logic for expect chain rectors
- * that convert function-based boolean assertions to dedicated matchers.
- *
- * Example: expect(is_file($path))->toBeTrue() → expect($path)->toBeFile()
- */
 trait ExpectChainValidation
 {
     /**
-     * Validate and extract a function call from expect(func(...))->toBeTrue/toBeFalse() pattern.
-     *
-     * @param array<string> $targetFunctions List of function names to match (e.g., ['is_file', 'is_dir'])
-     * @param array<string> $validMethods Matcher methods to look for (default: toBeTrue, toBeFalse)
+     * @param  array<string>  $targetFunctions  List of function names to match (e.g., ['is_file', 'is_dir'])
+     * @param  array<string>  $validMethods  Matcher methods to look for (default: toBeTrue, toBeFalse)
      * @return array{expectCall: FuncCall, funcCall: FuncCall, methodName: string}|null
      */
     protected function extractFunctionFromExpect(
@@ -83,9 +75,6 @@ trait ExpectChainValidation
         ];
     }
 
-    /**
-     * Calculate whether the result needs a ->not modifier based on original method and existing not.
-     */
     protected function calculateNeedsNot(string $methodName, MethodCall $node): bool
     {
         $needsNot = $methodName === 'toBeFalse';
@@ -97,9 +86,7 @@ trait ExpectChainValidation
     }
 
     /**
-     * Build the final MethodCall result with optional ->not modifier.
-     *
-     * @param array<Arg> $matcherArgs Arguments for the matcher method
+     * @param  array<Arg>  $matcherArgs  Arguments for the matcher method
      */
     protected function buildMatcherCall(
         FuncCall $expectCall,

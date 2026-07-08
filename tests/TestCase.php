@@ -10,7 +10,7 @@ abstract class TestCase extends AbstractRectorTestCase
 {
     public static string $configFilePath = '';
 
-    public function provideConfigFilePath(): string
+    final public function provideConfigFilePath(): string
     {
         return self::$configFilePath;
     }

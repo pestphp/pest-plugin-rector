@@ -12,12 +12,6 @@ use RectorPest\Concerns\ExpectChainValidation;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Converts array_key_exists() checks to Pest's toHaveKey() matcher.
- *
- * Before: expect(array_key_exists('key', $array))->toBeTrue()
- * After:  expect($array)->toHaveKey('key')
- */
 final class UseToHaveKeyRector extends AbstractRector
 {
     use ExpectChainValidation;
@@ -58,7 +52,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {
@@ -69,7 +63,6 @@ CODE_SAMPLE
 
         $funcCall = $extracted['funcCall'];
 
-        // array_key_exists requires 2 arguments: key, array
         if (count($funcCall->args) !== 2) {
             return null;
         }

@@ -17,9 +17,6 @@ use RectorPest\ValueObject\PestSemanticIssue;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-/**
- * Normalizes invalid repeat() counts to Pest's minimum supported value.
- */
 final class FixInvalidRepeatValueRector extends AbstractSemanticPestRector
 {
     // @codeCoverageIgnoreStart
@@ -61,7 +58,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param MethodCall $node
+     * @param  MethodCall  $node
      */
     public function refactor(Node $node): ?Node
     {

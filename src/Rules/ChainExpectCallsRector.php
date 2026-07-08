@@ -134,7 +134,6 @@ CODE_SAMPLE
                     continue;
                 }
 
-                // don't merge across comments — preserve explicit separation
                 $currentComments = (array) $stmt->getAttribute('comments', []);
                 $nextComments = (array) $nextStmt->getAttribute('comments', []);
                 if ($currentComments !== []) {
@@ -145,11 +144,7 @@ CODE_SAMPLE
                     continue;
                 }
 
-                // same variable: normally merge methods into a single expect() chain
                 if ($this->nodeComparator->areNodesEqual($firstExpectArg, $nextExpectArg)) {
-                    // if the current chain already contains an `and` call, prefer
-                    // merging the next statements as different-variable chains
-                    // to avoid appending methods in the wrong order.
                     $currentMethods = $this->collectChainMethods($methodCall);
                     $hasAnd = false;
                     foreach ($currentMethods as $cm) {
@@ -161,14 +156,10 @@ CODE_SAMPLE
                         }
                     }
 
-                    if ($hasAnd) {
-                        if ($this->mergeDifferentVariableChains($stmts, $key)) {
-                            $hasChanged = true;
-                            $changedInPass = true;
-                            break;
-                        }
-
-                        // fallthrough to default merge if mergeDifferentVariableChains did nothing
+                    if ($hasAnd && $this->mergeDifferentVariableChains($stmts, $key)) {
+                        $hasChanged = true;
+                        $changedInPass = true;
+                        break;
                     }
 
                     $this->mergeSameVariable($stmts, $key);
@@ -179,7 +170,6 @@ CODE_SAMPLE
                     break;
                 }
 
-                // different variables: try to merge the following expect() chains into a single ->and(...) chain
                 if ($this->mergeDifferentVariableChains($stmts, $key)) {
                     $hasChanged = true;
                     $changedInPass = true;
@@ -209,7 +199,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Node\Stmt> $stmts
+     * @param  array<Node\Stmt>  $stmts
      */
     private function mergeSameVariable(array &$stmts, int $key): void
     {
@@ -228,7 +218,6 @@ CODE_SAMPLE
 
         $this->applyNewlineAttributes($exprStmt->expr);
 
-        // preserve comments from the removed statement(s)
         $collectedComments = (array) $exprStmt->getAttribute('comments', []);
         $collectedComments = array_merge($collectedComments, (array) $nextExprStmt->getAttribute('comments', []));
 
@@ -243,7 +232,8 @@ CODE_SAMPLE
 
                 if (method_exists($c, 'getText')) {
                     $text = $c->getText();
-                    return is_string($text) && trim($text) !== '';
+
+                    return is_string($text) && mb_trim($text) !== '';
                 }
 
                 return true;
@@ -256,7 +246,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param array<Node\Stmt> $stmts
+     * @param  array<Node\Stmt>  $stmts
      */
     private function mergeDifferentVariableChains(array &$stmts, int $key): bool
     {
@@ -270,7 +260,6 @@ CODE_SAMPLE
 
         /** @var MethodCall $firstMethodCall */
         /** @var MethodCall $nextMethodCall */
-
         $targetExpectArg = $this->getExpectArgument($nextMethodCall);
         if (! $targetExpectArg instanceof Expr) {
             return false;
@@ -287,7 +276,6 @@ CODE_SAMPLE
                 break;
             }
 
-            // stop merging further when there are comments on this statement
             $currComments = (array) $currStmt->getAttribute('comments', []);
             if ($currComments !== []) {
                 break;
@@ -315,7 +303,6 @@ CODE_SAMPLE
             $methods = $this->collectChainMethods($currMethodCall);
             $allSecondMethods = array_merge($allSecondMethods, $methods);
 
-            // collect comments from statements we are removing
             $collectedComments = array_merge($collectedComments, (array) $currStmt->getAttribute('comments', []));
 
             unset($stmts[$collectIndex]);
@@ -335,7 +322,6 @@ CODE_SAMPLE
 
         $this->applyNewlineAttributes($exprStmt->expr);
 
-        // attach collected comments to the merged statement (filter out empty ones)
         if ($collectedComments !== []) {
             $filtered = array_values(array_filter($collectedComments, function ($c): bool {
                 if (! is_object($c)) {
@@ -344,7 +330,8 @@ CODE_SAMPLE
 
                 if (method_exists($c, 'getText')) {
                     $text = $c->getText();
-                    return is_string($text) && trim($text) !== '';
+
+                    return is_string($text) && mb_trim($text) !== '';
                 }
 
                 return true;
@@ -362,7 +349,7 @@ CODE_SAMPLE
 
     private function applyNewlineAttributes(Expr $chain): void
     {
-        if (! defined(AttributeKey::class . '::NEWLINE_ON_FLUENT_CALL')) {
+        if (! defined(AttributeKey::class.'::NEWLINE_ON_FLUENT_CALL')) {
             return;
         }
 
@@ -372,13 +359,12 @@ CODE_SAMPLE
             $var = $current->var;
 
             if ($var instanceof FuncCall) {
-                // First call directly after expect(): keep on same line
                 break;
             }
 
             if ($var instanceof PropertyFetch) {
-                // ->not->toBeX() unit: printer can't add newline here; skip through ->not
                 $current = $var->var;
+
                 continue;
             }
 
@@ -387,14 +373,12 @@ CODE_SAMPLE
             }
 
             if ($this->isName($var->name, 'and')) {
-                // Current is the first call after ->and(): keep on same line as ->and()
-                // The ->and() call itself needs a newline
                 $var->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
                 $current = $var->var;
+
                 continue;
             }
 
-            // Not first after expect() or ->and(): put on new line
             $current->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
             $current = $var;
         }

@@ -7,9 +7,6 @@ namespace RectorPest\Interop;
 use RectorPest\Registry\PestSemanticIssues;
 use RectorPest\ValueObject\PestSemanticIssue;
 
-/**
- * Resolves machine-readable diagnostic identifiers to canonical semantic issues.
- */
 final class PestDiagnosticResolver
 {
     /** @var array<string, PestSemanticIssue>|null */
@@ -20,32 +17,6 @@ final class PestDiagnosticResolver
 
     /** @var list<string>|null */
     private ?array $supportedDiagnosticIdentifiers = null;
-
-    /**
-     * @return array<string, PestSemanticIssue>
-     */
-    private function identifierMap(): array
-    {
-        if (is_array($this->identifierMap)) {
-            return $this->identifierMap;
-        }
-
-        $identifierMap = [];
-        $canonicalIdentifierMap = [];
-
-        foreach (PestSemanticIssues::all() as $issue) {
-            foreach ($issue->allDiagnosticIdentifiers() as $identifier) {
-                $identifierMap[$identifier] = $issue;
-                $canonicalIdentifierMap[$identifier] = $issue->identifier;
-            }
-        }
-
-        $this->identifierMap = $identifierMap;
-        $this->canonicalIdentifierMap = $canonicalIdentifierMap;
-        $this->supportedDiagnosticIdentifiers = array_keys($identifierMap);
-
-        return $this->identifierMap;
-    }
 
     public function resolve(string $diagnosticIdentifier): ?PestSemanticIssue
     {
@@ -65,7 +36,7 @@ final class PestDiagnosticResolver
     }
 
     /**
-     * @param list<string> $diagnosticIdentifiers
+     * @param  list<string>  $diagnosticIdentifiers
      * @return list<PestSemanticIssue>
      */
     public function resolveAll(array $diagnosticIdentifiers): array
@@ -93,5 +64,31 @@ final class PestDiagnosticResolver
         $this->identifierMap();
 
         return $this->supportedDiagnosticIdentifiers ?? [];
+    }
+
+    /**
+     * @return array<string, PestSemanticIssue>
+     */
+    private function identifierMap(): array
+    {
+        if (is_array($this->identifierMap)) {
+            return $this->identifierMap;
+        }
+
+        $identifierMap = [];
+        $canonicalIdentifierMap = [];
+
+        foreach (PestSemanticIssues::all() as $issue) {
+            foreach ($issue->allDiagnosticIdentifiers() as $identifier) {
+                $identifierMap[$identifier] = $issue;
+                $canonicalIdentifierMap[$identifier] = $issue->identifier;
+            }
+        }
+
+        $this->identifierMap = $identifierMap;
+        $this->canonicalIdentifierMap = $canonicalIdentifierMap;
+        $this->supportedDiagnosticIdentifiers = array_keys($identifierMap);
+
+        return $this->identifierMap;
     }
 }
