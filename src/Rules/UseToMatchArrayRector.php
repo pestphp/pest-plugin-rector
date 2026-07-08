@@ -245,12 +245,6 @@ CODE_SAMPLE
      */
     private function allValidExpectations(array $expectations): bool
     {
-        foreach ($expectations as $expectation) {
-            if ($expectation['key'] === null || $expectation['value'] === null) {
-                return false;
-            }
-        }
-
-        return true;
+        return array_all($expectations, fn (array $expectation): bool => $expectation['key'] !== null && $expectation['value'] !== null);
     }
 }

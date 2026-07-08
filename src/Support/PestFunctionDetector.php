@@ -120,13 +120,7 @@ final class PestFunctionDetector
 
     public static function closureRequiresInstanceBinding(Closure|ArrowFunction $closure): bool
     {
-        foreach ($closure->getSubNodeNames() as $subNodeName) {
-            if (self::subNodeUsesThis($closure->{$subNodeName})) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($closure->getSubNodeNames(), fn (string $subNodeName): bool => self::subNodeUsesThis($closure->{$subNodeName}));
     }
 
     private static function subNodeUsesThis(mixed $subNode): bool
@@ -148,26 +142,14 @@ final class PestFunctionDetector
         }
 
         if ($subNode instanceof Node) {
-            foreach ($subNode->getSubNodeNames() as $subNodeName) {
-                if (self::subNodeUsesThis($subNode->{$subNodeName})) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($subNode->getSubNodeNames(), fn (string $subNodeName): bool => self::subNodeUsesThis($subNode->{$subNodeName}));
         }
 
         if (! is_array($subNode)) {
             return false;
         }
 
-        foreach ($subNode as $item) {
-            if (self::subNodeUsesThis($item)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($subNode, fn ($item): bool => self::subNodeUsesThis($item));
     }
 
     private static function funcCallUsesThis(FuncCall $funcCall): bool

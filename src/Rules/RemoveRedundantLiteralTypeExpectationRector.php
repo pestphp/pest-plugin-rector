@@ -148,26 +148,14 @@ CODE_SAMPLE
                 return true;
             }
 
-            foreach ($node->getSubNodeNames() as $subNodeName) {
-                if ($this->nodeOrDescendantsHaveComments($node->{$subNodeName})) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($node->getSubNodeNames(), fn (string $subNodeName): bool => $this->nodeOrDescendantsHaveComments($node->{$subNodeName}));
         }
 
         if (! is_array($node)) {
             return false;
         }
 
-        foreach ($node as $item) {
-            if ($this->nodeOrDescendantsHaveComments($item)) {
-                return true;
-            }
-        }
-
-        return false;
+        return array_any($node, fn ($item): bool => $this->nodeOrDescendantsHaveComments($item));
     }
 
     private function hasInlineCommentBetween(MethodCall $inner, MethodCall $current): bool
