@@ -1,37 +1,39 @@
 {
-    "name": "pestphp/pest-plugin-rector",
-    "description": "Rector upgrade rules for Pest - refactoring and best practices for Pest testing framework",
-    "license": "MIT",
+    "name": "pestphp/pest-plugin-phpstan",
+    "description": "PHPStan plugin for Pest",
     "keywords": [
-        "rector",
+        "php",
+        "framework",
         "pest",
-        "pestphp",
-        "phpunit",
+        "unit",
+        "test",
         "testing",
-        "refactoring",
-        "static-analysis",
-        "ast",
-        "instant-upgrades",
-        "dev"
+        "plugin",
+        "phpstan"
     ],
+    "license": "MIT",
     "authors": [
         {
             "name": "Punyapal Shah",
             "email": "mrpunyapal@gmail.com"
+        },
+        {
+            "name": "Nuno Maduro",
+            "email": "enunomaduro@gmail.com"
         }
     ],
     "require": {
         "php": "^8.4",
-        "rector/rector": "^2.0",
+        "rector/rector": "^2.5.4",
         "symplify/rule-doc-generator-contracts": "^11.2"
     },
     "require-dev": {
-        "laravel/pao": "^1.0",
-        "laravel/pint": "^1.18",
-        "mrpunyapal/peststan": "^0.2.5",
-        "pestphp/pest": "^3.0 || ^4.0 || ^5.0",
-        "phpstan/phpstan": "^2.1",
-        "symplify/rule-doc-generator": "^12.2"
+        "laravel/pao": "^1.1.2",
+        "laravel/pint": "^1.29.3",
+        "mrpunyapal/peststan": "^0.2.11",
+        "pestphp/pest": "^5.0.0",
+        "phpstan/phpstan": "^2.2.5",
+        "symplify/rule-doc-generator": "^12.2.5"
     },
     "autoload": {
         "psr-4": {
