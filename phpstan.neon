@@ -1,6 +1,16 @@
+includes:
+    - vendor/mrpunyapal/peststan/extension.neon
+
 parameters:
+
     level: max
     paths:
         - src
+        - config
 
-    reportUnmatchedIgnoredErrors: true
+    excludePaths:
+        - tests/Fixture
+        - tests/*/Fixture
+        - tests/*/*/Fixture
+        - '*/Source/*'
+        - '*/Expected/*'

@@ -1,53 +1,74 @@
 {
-    "name": "pestphp/pest-plugin-template",
-    "description": "My awesome plugin",
-    "keywords": [
-        "php",
-        "framework",
-        "pest",
-        "unit",
-        "test",
-        "testing",
-        "plugin"
-    ],
+    "name": "pestphp/pest-plugin-rector",
+    "description": "Rector upgrade rules for Pest - refactoring and best practices for Pest testing framework",
     "license": "MIT",
+    "keywords": [
+        "rector",
+        "pest",
+        "pestphp",
+        "phpunit",
+        "testing",
+        "refactoring",
+        "static-analysis",
+        "ast",
+        "instant-upgrades",
+        "dev"
+    ],
+    "authors": [
+        {
+            "name": "Punyapal Shah",
+            "email": "mrpunyapal@gmail.com"
+        }
+    ],
     "require": {
-        "php": "^8.4",
-        "pestphp/pest": "^5.0.0",
-        "pestphp/pest-plugin": "^5.0.0"
+        "php": "^8.2",
+        "rector/rector": "^2.0",
+        "symplify/rule-doc-generator-contracts": "^11.2"
+    },
+    "require-dev": {
+        "laravel/pao": "^1.0",
+        "laravel/pint": "^1.18",
+        "mrpunyapal/peststan": "^0.2.5",
+        "pestphp/pest": "^3.0 || ^4.0",
+        "phpstan/phpstan": "^2.1",
+        "symplify/rule-doc-generator": "^12.2"
     },
     "autoload": {
         "psr-4": {
-            "Pest\\PluginName\\": "src/"
-        },
-        "files": [
-            "src/Autoload.php"
-        ]
+            "RectorPest\\": "src/"
+        }
     },
-    "require-dev": {
-        "pestphp/pest-dev-tools": "^5.0.0"
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
     "config": {
-        "sort-packages": true,
-        "preferred-install": "dist",
         "allow-plugins": {
             "pestphp/pest-plugin": true
-        }
+        },
+        "sort-packages": true,
+        "platform-check": false
     },
     "scripts": {
-        "refacto": "rector",
-        "lint": "pint",
-        "test:refacto": "rector --dry-run",
-        "test:lint": "pint --test",
+        "lint": [
+            "rector",
+            "pint --parallel"
+        ],
+        "test:lint": [
+            "rector --dry-run",
+            "pint --test --parallel"
+        ],
         "test:types": "phpstan analyse --ansi",
-        "test:unit": "pest --colors=always",
+        "test:unit": "pest --parallel",
         "test": [
-            "@test:refacto",
+            "Composer\\Config::disableProcessTimeout",
             "@test:lint",
             "@test:types",
             "@test:unit"
-        ]
+        ],
+        "docs": "vendor/bin/rule-doc-generator generate src --output-file docs/rules.md --ansi"
     }
 }

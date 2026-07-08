@@ -1,0 +1,12 @@
+<?php
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Fixture\SampleTestCase;
+
+pest()
+    ->extend(SampleTestCase::class)
+    ->use(RefreshDatabase::class)
+    ->beforeEach(function (): void {
+        // setup
+    })
+    ->in('Feature', 'Unit');

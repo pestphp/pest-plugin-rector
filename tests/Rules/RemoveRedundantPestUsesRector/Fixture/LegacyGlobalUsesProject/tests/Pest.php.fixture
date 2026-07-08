@@ -1,0 +1,9 @@
+<?php
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Tests\Fixture\SampleTestCase;
+
+uses(
+    SampleTestCase::class,
+    RefreshDatabase::class
+)->in('Feature', 'Unit');
