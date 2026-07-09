@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Rules;
+namespace Pest\Rector\Rules;
 
+use Pest\Rector\AbstractSemanticPestRector;
+use Pest\Rector\Analyzer\PestChainAnalyzer;
+use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\ValueObject\PestSemanticIssue;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
-use RectorPest\AbstractSemanticPestRector;
-use RectorPest\Analyzer\PestChainAnalyzer;
-use RectorPest\Registry\PestSemanticIssues;
-use RectorPest\ValueObject\PestSemanticIssue;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

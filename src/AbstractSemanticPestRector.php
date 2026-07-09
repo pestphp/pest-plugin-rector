@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RectorPest;
+namespace Pest\Rector;
 
-use RectorPest\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\PestSemanticIssue;
 
 abstract class AbstractSemanticPestRector extends AbstractRector
 {

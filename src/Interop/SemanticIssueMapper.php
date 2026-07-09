@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Interop;
+namespace Pest\Rector\Interop;
 
-use RectorPest\AbstractSemanticPestRector;
-use RectorPest\Registry\PestSemanticIssues;
-use RectorPest\Rules\ConvertBeforeAllInDescribeRector;
-use RectorPest\Rules\FixInvalidRepeatValueRector;
-use RectorPest\Rules\RemoveRedundantLiteralTypeExpectationRector;
-use RectorPest\Rules\RemoveStaticTestClosureRector;
-use RectorPest\ValueObject\PestSemanticIssue;
-use RectorPest\ValueObject\SemanticFixCandidate;
+use Pest\Rector\AbstractSemanticPestRector;
+use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\Rules\ConvertBeforeAllInDescribeRector;
+use Pest\Rector\Rules\FixInvalidRepeatValueRector;
+use Pest\Rector\Rules\RemoveRedundantLiteralTypeExpectationRector;
+use Pest\Rector\Rules\RemoveStaticTestClosureRector;
+use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\SemanticFixCandidate;
 
 final readonly class SemanticIssueMapper
 {

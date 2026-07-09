@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToBeUuidRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToBeUuidRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToBeUuidRector::class);

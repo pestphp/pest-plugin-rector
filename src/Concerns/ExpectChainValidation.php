@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Concerns;
+namespace Pest\Rector\Concerns;
 
 use PhpParser\Node;
 use PhpParser\Node\Arg;

@@ -2,8 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Analyzer;
+namespace Pest\Rector\Analyzer;
 
+use Pest\Rector\ValueObject\ExpectationSemanticAnalysis;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrowFunction;
@@ -16,7 +17,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Float_;
 use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
-use RectorPest\ValueObject\ExpectationSemanticAnalysis;
 
 final class SemanticExpectationAnalyzer
 {

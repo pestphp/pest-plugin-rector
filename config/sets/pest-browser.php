@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\Browser\UseBrowserAriaAndDataAttributeAssertionsRector;
+use Pest\Rector\Rules\Browser\UseBrowserAttributeAssertionsRector;
+use Pest\Rector\Rules\Browser\UseBrowserScriptAssertionsRector;
+use Pest\Rector\Rules\Browser\UseBrowserSourceAssertionsRector;
+use Pest\Rector\Rules\Browser\UseBrowserUrlAssertionsRector;
+use Pest\Rector\Rules\Browser\UseBrowserValueAssertionsRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\Browser\UseBrowserAriaAndDataAttributeAssertionsRector;
-use RectorPest\Rules\Browser\UseBrowserAttributeAssertionsRector;
-use RectorPest\Rules\Browser\UseBrowserScriptAssertionsRector;
-use RectorPest\Rules\Browser\UseBrowserSourceAssertionsRector;
-use RectorPest\Rules\Browser\UseBrowserUrlAssertionsRector;
-use RectorPest\Rules\Browser\UseBrowserValueAssertionsRector;
 
 /**
  * Code quality improvements for Pest Browser tests

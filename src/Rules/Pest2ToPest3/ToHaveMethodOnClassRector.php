@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Rules\Pest2ToPest3;
+namespace Pest\Rector\Rules\Pest2ToPest3;
 
+use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

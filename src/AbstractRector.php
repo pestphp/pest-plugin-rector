@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RectorPest;
+namespace Pest\Rector;
 
 use Pest\Expectation;
 use PhpParser\Node;

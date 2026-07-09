@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\Browser\UseBrowserAttributeAssertionsRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\Browser\UseBrowserAttributeAssertionsRector;
 
 return RectorConfig::configure()
     ->withRules([UseBrowserAttributeAssertionsRector::class]);

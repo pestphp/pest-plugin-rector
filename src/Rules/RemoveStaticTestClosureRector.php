@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Rules;
+namespace Pest\Rector\Rules;
 
+use Pest\Rector\AbstractSemanticPestRector;
+use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\Support\PestFunctionDetector;
+use Pest\Rector\ValueObject\PestSemanticIssue;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use RectorPest\AbstractSemanticPestRector;
-use RectorPest\Registry\PestSemanticIssues;
-use RectorPest\Support\PestFunctionDetector;
-use RectorPest\ValueObject\PestSemanticIssue;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

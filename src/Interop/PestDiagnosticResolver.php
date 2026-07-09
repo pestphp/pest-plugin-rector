@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Interop;
+namespace Pest\Rector\Interop;
 
-use RectorPest\Registry\PestSemanticIssues;
-use RectorPest\ValueObject\PestSemanticIssue;
+use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\ValueObject\PestSemanticIssue;
 
 final class PestDiagnosticResolver
 {

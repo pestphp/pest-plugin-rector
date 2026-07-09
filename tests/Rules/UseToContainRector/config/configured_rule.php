@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToContainRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToContainRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToContainRector::class);

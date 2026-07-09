@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\SimplifyFilesystemMatchersRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\SimplifyFilesystemMatchersRector;
 
 return RectorConfig::configure()
     ->withRules([SimplifyFilesystemMatchersRector::class]);

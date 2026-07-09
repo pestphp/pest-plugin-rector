@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToMatchObjectRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToMatchObjectRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToMatchObjectRector::class);

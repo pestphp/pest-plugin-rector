@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToBeCamelCaseRector;
+use Pest\Rector\Rules\UseToBeKebabCaseRector;
+use Pest\Rector\Rules\UseToBeSlugRector;
+use Pest\Rector\Rules\UseToBeSnakeCaseRector;
+use Pest\Rector\Rules\UseToBeStudlyCaseRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToBeCamelCaseRector;
-use RectorPest\Rules\UseToBeKebabCaseRector;
-use RectorPest\Rules\UseToBeSlugRector;
-use RectorPest\Rules\UseToBeSnakeCaseRector;
-use RectorPest\Rules\UseToBeStudlyCaseRector;
 
 /**
  * Code quality improvements for Pest tests in Laravel projects

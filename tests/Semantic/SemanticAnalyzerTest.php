@@ -2,6 +2,10 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Analyzer\HookSemanticAnalyzer;
+use Pest\Rector\Analyzer\PestChainAnalyzer;
+use Pest\Rector\Analyzer\SemanticExpectationAnalyzer;
+use Pest\Rector\Support\PestFunctionDetector;
 use PhpParser\Node;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -10,10 +14,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\NodeFinder;
 use PhpParser\ParserFactory;
-use RectorPest\Analyzer\HookSemanticAnalyzer;
-use RectorPest\Analyzer\PestChainAnalyzer;
-use RectorPest\Analyzer\SemanticExpectationAnalyzer;
-use RectorPest\Support\PestFunctionDetector;
 
 it('finds invalid describe hooks recursively', function (): void {
     $describeCall = findFirstNode(

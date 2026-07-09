@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Rules;
+namespace Pest\Rector\Rules;
 
+use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use RectorPest\AbstractRector;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 

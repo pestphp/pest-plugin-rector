@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToBeJsonRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToBeJsonRector;
 
 return RectorConfig::configure()
     ->withRules([UseToBeJsonRector::class]);

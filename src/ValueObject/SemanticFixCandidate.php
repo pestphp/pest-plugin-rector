@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\ValueObject;
+namespace Pest\Rector\ValueObject;
 
-use RectorPest\AbstractSemanticPestRector;
+use Pest\Rector\AbstractSemanticPestRector;
 
 final readonly class SemanticFixCandidate
 {

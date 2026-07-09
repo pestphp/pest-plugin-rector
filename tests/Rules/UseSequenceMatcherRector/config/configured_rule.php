@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseSequenceMatcherRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseSequenceMatcherRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__.'/../../../../config/config.php');

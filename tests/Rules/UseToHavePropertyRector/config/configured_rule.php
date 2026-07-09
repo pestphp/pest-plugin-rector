@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToHavePropertyRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToHavePropertyRector;
 
 return RectorConfig::configure()
     ->withRules([UseToHavePropertyRector::class]);

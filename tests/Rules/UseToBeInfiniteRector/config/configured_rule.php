@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToBeInfiniteRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToBeInfiniteRector;
 
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToBeInfiniteRector::class);

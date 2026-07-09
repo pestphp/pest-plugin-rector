@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\ConvertAssertToExpectRector;
+use Pest\Rector\Rules\ConvertExpectExceptionToThrowRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\ConvertAssertToExpectRector;
-use RectorPest\Rules\ConvertExpectExceptionToThrowRector;
 
 /**
  * PHPUnit to Pest migration rules

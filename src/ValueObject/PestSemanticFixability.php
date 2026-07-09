@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\ValueObject;
+namespace Pest\Rector\ValueObject;
 
 final class PestSemanticFixability
 {

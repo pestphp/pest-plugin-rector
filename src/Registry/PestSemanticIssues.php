@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Registry;
+namespace Pest\Rector\Registry;
 
-use RectorPest\ValueObject\PestSemanticAutofixStrategy;
-use RectorPest\ValueObject\PestSemanticCategory;
-use RectorPest\ValueObject\PestSemanticConfidence;
-use RectorPest\ValueObject\PestSemanticFixability;
-use RectorPest\ValueObject\PestSemanticFixCategory;
-use RectorPest\ValueObject\PestSemanticIssue;
-use RectorPest\ValueObject\PestSemanticSafetyLevel;
-use RectorPest\ValueObject\PestSemanticSeverity;
+use Pest\Rector\ValueObject\PestSemanticAutofixStrategy;
+use Pest\Rector\ValueObject\PestSemanticCategory;
+use Pest\Rector\ValueObject\PestSemanticConfidence;
+use Pest\Rector\ValueObject\PestSemanticFixability;
+use Pest\Rector\ValueObject\PestSemanticFixCategory;
+use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\PestSemanticSafetyLevel;
+use Pest\Rector\ValueObject\PestSemanticSeverity;
 
 final class PestSemanticIssues
 {

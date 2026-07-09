@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use RectorPest\Interop\PestDiagnosticResolver;
-use RectorPest\Interop\SemanticIssueMapper;
-use RectorPest\Registry\PestSemanticIssues;
-use RectorPest\Rules\ConvertBeforeAllInDescribeRector;
-use RectorPest\Rules\FixInvalidRepeatValueRector;
-use RectorPest\Rules\RemoveRedundantLiteralTypeExpectationRector;
-use RectorPest\ValueObject\PestSemanticAutofixStrategy;
-use RectorPest\ValueObject\PestSemanticFixability;
-use RectorPest\ValueObject\PestSemanticIssue;
-use RectorPest\ValueObject\PestSemanticSafetyLevel;
-use RectorPest\ValueObject\PestSemanticSeverity;
+use Pest\Rector\Interop\PestDiagnosticResolver;
+use Pest\Rector\Interop\SemanticIssueMapper;
+use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\Rules\ConvertBeforeAllInDescribeRector;
+use Pest\Rector\Rules\FixInvalidRepeatValueRector;
+use Pest\Rector\Rules\RemoveRedundantLiteralTypeExpectationRector;
+use Pest\Rector\ValueObject\PestSemanticAutofixStrategy;
+use Pest\Rector\ValueObject\PestSemanticFixability;
+use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\PestSemanticSafetyLevel;
+use Pest\Rector\ValueObject\PestSemanticSeverity;
 
 it('exposes canonical metadata for invalid repeat values', function (): void {
     $issue = PestSemanticIssues::invalidRepeatValue();

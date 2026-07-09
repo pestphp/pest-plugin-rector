@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\ChainExpectCallsRector;
+use Pest\Rector\Rules\EnsureTypeChecksFirstRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\ChainExpectCallsRector;
-use RectorPest\Rules\EnsureTypeChecksFirstRector;
 
 /**
  * Pest expectation chaining rules

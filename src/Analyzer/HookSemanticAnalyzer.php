@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Analyzer;
+namespace Pest\Rector\Analyzer;
 
+use Pest\Rector\Support\PestFunctionDetector;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\Expression;
-use RectorPest\Support\PestFunctionDetector;
 
 final class HookSemanticAnalyzer
 {

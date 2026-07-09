@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace RectorPest\Set;
+namespace Pest\Rector\Set;
 
 final class PestLevelSetList
 {

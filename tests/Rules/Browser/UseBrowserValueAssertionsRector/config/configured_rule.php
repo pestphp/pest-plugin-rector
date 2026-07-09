@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\Browser\UseBrowserValueAssertionsRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\Browser\UseBrowserValueAssertionsRector;
 
 return RectorConfig::configure()
     ->withRules([UseBrowserValueAssertionsRector::class]);

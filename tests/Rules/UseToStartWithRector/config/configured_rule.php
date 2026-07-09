@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\UseToStartWithRector;
 use Rector\Config\RectorConfig;
-use RectorPest\Rules\UseToStartWithRector;
 
 return RectorConfig::configure()
     ->withRules([UseToStartWithRector::class]);
