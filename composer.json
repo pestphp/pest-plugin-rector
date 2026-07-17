@@ -1,6 +1,6 @@
 {
-    "name": "pestphp/pest-plugin-phpstan",
-    "description": "PHPStan plugin for Pest",
+    "name": "pestphp/pest-plugin-rector",
+    "description": "Rector plugin for Pest",
     "keywords": [
         "php",
         "framework",
@@ -9,7 +9,7 @@
         "test",
         "testing",
         "plugin",
-        "phpstan"
+        "rector"
     ],
     "license": "MIT",
     "authors": [
@@ -24,7 +24,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "rector/rector": "^2.5.4",
+        "rector/rector": "^2.5.7",
         "symplify/rule-doc-generator-contracts": "^11.2"
     },
     "require-dev": {

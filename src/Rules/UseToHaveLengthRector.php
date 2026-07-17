@@ -80,16 +80,16 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $holder = $this->getMatcherSubjectHolder($node);
+        if (! $holder instanceof FuncCall && ! $holder instanceof MethodCall) {
             return null;
         }
 
-        if (! isset($expectCall->args[0])) {
+        if (! isset($holder->args[0])) {
             return null;
         }
 
-        $arg = $expectCall->args[0];
+        $arg = $holder->args[0];
         if (! $arg instanceof Arg) {
             return null;
         }
@@ -121,8 +121,11 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall->args[0] = new Arg($stringArg->value);
+        $holder->args[0] = new Arg($stringArg->value);
 
-        return new MethodCall($expectCall, 'toHaveLength', [new Arg($lengthArg->value)]);
+        $node->name = new Identifier('toHaveLength');
+        $node->args = [new Arg($lengthArg->value)];
+
+        return $node;
     }
 }

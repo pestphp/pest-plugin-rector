@@ -68,12 +68,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $holder = $this->getMatcherSubjectHolder($node);
+        if (! $holder instanceof FuncCall && ! $holder instanceof MethodCall) {
             return null;
         }
 
-        $expectArg = $this->getExpectArgument($node);
+        $expectArg = $this->getMatcherSubject($node);
         if (! $expectArg instanceof FuncCall) {
             return null;
         }
@@ -95,7 +95,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall->args = [new Arg($countArg->value)];
+        $holder->args[0] = new Arg($countArg->value);
 
         $node->name = new Identifier('toHaveCount');
 

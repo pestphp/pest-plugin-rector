@@ -87,6 +87,50 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return $arg->value;
     }
 
+    protected function getMatcherSubjectHolder(MethodCall $methodCall): FuncCall|MethodCall|null
+    {
+        $current = $methodCall->var;
+
+        while (true) {
+            if ($current instanceof MethodCall) {
+                if ($this->isName($current->name, 'and')) {
+                    return $current;
+                }
+
+                $current = $current->var;
+
+                continue;
+            }
+
+            if ($current instanceof PropertyFetch) {
+                $current = $current->var;
+
+                continue;
+            }
+
+            if ($current instanceof FuncCall && $this->isName($current, 'expect')) {
+                return $current;
+            }
+
+            return null;
+        }
+    }
+
+    protected function getMatcherSubject(MethodCall $methodCall): ?Expr
+    {
+        $holder = $this->getMatcherSubjectHolder($methodCall);
+
+        if (! $holder instanceof FuncCall && ! $holder instanceof MethodCall) {
+            return null;
+        }
+
+        if (! isset($holder->args[0]) || ! $holder->args[0] instanceof Arg) {
+            return null;
+        }
+
+        return $holder->args[0]->value;
+    }
+
     protected function isExpectValueOfType(MethodCall $methodCall, string $typeCheck): bool
     {
         $expectCall = $this->getExpectFuncCall($methodCall);
