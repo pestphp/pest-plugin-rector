@@ -10,6 +10,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -22,10 +23,13 @@ final class SimplifyExpectNotRector extends AbstractRector
     private const FLIPPABLE_MATCHERS = [
         'toBeTrue' => 'toBeFalse',
         'toBeFalse' => 'toBeTrue',
-        'toBeEmpty' => 'toBeNotEmpty',
-        'toBeNotEmpty' => 'toBeEmpty',
-        'toBeNull' => 'toBeNotNull',
-        'toBeNotNull' => 'toBeNull',
+    ];
+
+    /**
+     * @var array<int, string>
+     */
+    private const NEGATABLE_MATCHERS = [
+        'toBeEmpty',
     ];
 
     // @codeCoverageIgnoreStart
@@ -86,17 +90,54 @@ CODE_SAMPLE
             return null;
         }
 
-        $finalMethodName = $this->getFinalMethodName($node);
-        if ($finalMethodName === null || ! isset(self::FLIPPABLE_MATCHERS[$finalMethodName])) {
+        if (! $this->isCalledDirectlyOnExpect($node, $expectCall)) {
             return null;
         }
 
-        $negatedExpression = $arg->value->expr;
-        $expectCall->args[0] = $this->nodeFactory->createArg($negatedExpression);
+        $finalMethodName = $this->getFinalMethodName($node);
+        if ($finalMethodName === null) {
+            return null;
+        }
 
-        $this->flipFinalMatcher($node, self::FLIPPABLE_MATCHERS[$finalMethodName]);
+        if (isset(self::FLIPPABLE_MATCHERS[$finalMethodName])) {
+            $expectCall->args[0] = $this->nodeFactory->createArg($arg->value->expr);
 
-        return $node;
+            $this->flipFinalMatcher($node, self::FLIPPABLE_MATCHERS[$finalMethodName]);
+
+            return $node;
+        }
+
+        if (in_array($finalMethodName, self::NEGATABLE_MATCHERS, true)) {
+            $expectCall->args[0] = $this->nodeFactory->createArg($arg->value->expr);
+
+            $this->toggleNotModifier($node);
+
+            return $node;
+        }
+
+        return null;
+    }
+
+    private function isCalledDirectlyOnExpect(MethodCall $methodCall, FuncCall $expectCall): bool
+    {
+        $var = $methodCall->var;
+
+        if ($var instanceof PropertyFetch && $this->isName($var, 'not')) {
+            $var = $var->var;
+        }
+
+        return $var === $expectCall;
+    }
+
+    private function toggleNotModifier(MethodCall $methodCall): void
+    {
+        if ($methodCall->var instanceof PropertyFetch && $this->isName($methodCall->var, 'not')) {
+            $methodCall->var = $methodCall->var->var;
+
+            return;
+        }
+
+        $methodCall->var = new PropertyFetch($methodCall->var, 'not');
     }
 
     private function getFinalMethodName(MethodCall $methodCall): ?string

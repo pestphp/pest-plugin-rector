@@ -83,12 +83,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $expectCall = $this->getMatcherSubjectHolder($node);
+        if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
             return null;
         }
 
-        $expectArg = $this->getExpectArgument($node);
+        $expectArg = $this->getMatcherSubject($node);
         if (! $expectArg instanceof FuncCall) {
             return null;
         }

@@ -13,6 +13,7 @@ use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -114,7 +115,11 @@ CODE_SAMPLE
 
         $expectCall->args[0] = new Arg($actual);
 
-        return new MethodCall($expectCall, 'toEqualWithDelta', [
+        $target = $this->hasNotModifier($node)
+            ? new PropertyFetch($expectCall, 'not')
+            : $expectCall;
+
+        return new MethodCall($target, 'toEqualWithDelta', [
             new Arg($expected),
             new Arg($delta),
         ]);

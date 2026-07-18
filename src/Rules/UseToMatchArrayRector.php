@@ -98,11 +98,19 @@ CODE_SAMPLE
                 continue;
             }
 
+            $firstMethod = $this->getAssertionMethod($firstExpect);
+            if ($firstMethod === null || $this->hasNotModifier($firstExpect)) {
+                $newStmts[] = $stmt;
+                $i++;
+
+                continue;
+            }
+
             $expectations = [
                 [
                     'key' => $this->getArrayKey($this->getExpectArgument($firstExpect)),
                     'value' => $this->getExpectedValue($firstExpect),
-                    'method' => $this->getAssertionMethod($firstExpect),
+                    'method' => $firstMethod,
                 ],
             ];
 
@@ -128,7 +136,7 @@ CODE_SAMPLE
                 }
 
                 $method = $this->getAssertionMethod($nextExpect);
-                if ($method === null || ! in_array($method, ['toBe', 'toEqual'], true)) {
+                if ($method === null || $this->hasNotModifier($nextExpect)) {
                     break;
                 }
 
@@ -166,7 +174,10 @@ CODE_SAMPLE
                         [new Arg($matchArray)]
                     );
 
-                    $newStmts[] = new Expression($newMethodCall);
+                    $newExpression = new Expression($newMethodCall);
+                    $this->copyComments(array_slice($stmts, $i, $j - $i), $newExpression);
+
+                    $newStmts[] = $newExpression;
                     $hasChanged = true;
                 }
 

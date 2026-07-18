@@ -17,6 +17,7 @@ use Pest\Rector\Rules\SimplifyToLiteralBooleanRector;
 use Pest\Rector\Rules\ToBeTrueNotFalseRector;
 use Pest\Rector\Rules\UseEachModifierRector;
 use Pest\Rector\Rules\UseInstanceOfMatcherRector;
+use Pest\Rector\Rules\UseSequenceMatcherRector;
 use Pest\Rector\Rules\UseStrictEqualityMatchersRector;
 use Pest\Rector\Rules\UseToBeAlphaNumericRector;
 use Pest\Rector\Rules\UseToBeAlphaRector;
@@ -31,7 +32,6 @@ use Pest\Rector\Rules\UseToBeJsonRector;
 use Pest\Rector\Rules\UseToBeListRector;
 use Pest\Rector\Rules\UseToBeLowercaseRector;
 use Pest\Rector\Rules\UseToBeNanRector;
-use Pest\Rector\Rules\UseToBeReadableWritableRector;
 use Pest\Rector\Rules\UseToBeUppercaseRector;
 use Pest\Rector\Rules\UseToBeUrlRector;
 use Pest\Rector\Rules\UseToBeUuidRector;
@@ -113,6 +113,7 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToHaveCountRector::class);
     $rectorConfig->rule(UseToHaveSameSizeRector::class);
     $rectorConfig->rule(UseToMatchArrayRector::class);
+    $rectorConfig->rule(UseSequenceMatcherRector::class);
 
     // String matchers
     $rectorConfig->rule(UseToStartWithRector::class);
@@ -128,9 +129,12 @@ return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->rule(UseToBeAlphaNumericRector::class);
 
     // File system matchers
+    // UseToBeReadableWritableRector is intentionally not registered: it emits
+    // toBeReadable()/toBeWritable(), which only exist as custom expectation
+    // extensions. SimplifyFilesystemMatchersRector covers the cases where the
+    // file/directory kind is known (is_file() && is_readable(), etc.).
     $rectorConfig->rule(UseToBeFileRector::class);
     $rectorConfig->rule(UseToBeDirectoryRector::class);
-    $rectorConfig->rule(UseToBeReadableWritableRector::class);
     $rectorConfig->rule(SimplifyFilesystemMatchersRector::class);
 
     // Object matchers

@@ -644,13 +644,13 @@ Converts `is_file()` checks to `toBeFile()` matcher
 
 ## UseToBeInRector
 
-Converts `in_array()` with value first to `toBeIn()` matcher
+Converts strict `in_array()` checks to the `toBeIn()` matcher
 
 - class: [`Pest\Rector\Rules\UseToBeInRector`](../src/Rules/UseToBeInRector.php)
 
 ```diff
--expect(in_array($value, ['pending', 'active']))->toBeTrue();
--expect(in_array($status, $allowedStatuses))->toBeTrue();
+-expect(in_array($value, ['pending', 'active'], true))->toBeTrue();
+-expect(in_array($status, $allowedStatuses, true))->toBeTrue();
 +expect($value)->toBeIn(['pending', 'active']);
 +expect($status)->toBeIn($allowedStatuses);
 ```
@@ -741,7 +741,7 @@ Converts `is_nan()` checks to `toBeNan()` matcher
 
 ## UseToBeReadableWritableRector
 
-Converts `is_readable()/is_writable()` checks to `toBeReadable()/toBeWritable()` matchers
+Converts `is_readable()/is_writable()` checks to `toBeReadable()/toBeWritable()` matchers (requires the custom `expect()->extend()` matchers of the same name; not registered in any set)
 
 - class: [`Pest\Rector\Rules\UseToBeReadableWritableRector`](../src/Rules/UseToBeReadableWritableRector.php)
 

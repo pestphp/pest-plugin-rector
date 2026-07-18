@@ -88,7 +88,10 @@ CODE_SAMPLE
                 continue;
             }
 
-            $newStmts[] = new Expression($sequenceCall);
+            $newExpression = new Expression($sequenceCall);
+            $this->copyComments(array_slice($stmts, $i, count($group['chains'])), $newExpression);
+
+            $newStmts[] = $newExpression;
             $i += count($group['chains']);
             $hasChanged = true;
         }

@@ -10,7 +10,5 @@ final class PestSemanticFixability
 
     public const ASSISTED = 'assisted';
 
-    public const PLANNED = 'planned';
-
     public const INFORMATIONAL = 'informational';
 }

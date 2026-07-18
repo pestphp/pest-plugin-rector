@@ -30,8 +30,8 @@
     "require-dev": {
         "laravel/pao": "^1.1.2",
         "laravel/pint": "^1.29.3",
-        "mrpunyapal/peststan": "^0.2.11",
         "pestphp/pest": "^5.0.0",
+        "pestphp/pest-plugin-phpstan": "^5.0",
         "phpstan/phpstan": "^2.2.5",
         "symplify/rule-doc-generator": "^12.2.5"
     },

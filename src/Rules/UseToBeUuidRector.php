@@ -10,7 +10,7 @@ use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use PhpParser\Node\Scalar\LNumber;
+use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Scalar\String_;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -67,12 +67,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $expectCall = $this->getMatcherSubjectHolder($node);
+        if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
             return null;
         }
 
-        $expectArg = $this->getExpectArgument($node);
+        $expectArg = $this->getMatcherSubject($node);
         if (! $expectArg instanceof FuncCall) {
             return null;
         }
@@ -109,24 +109,18 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->isName($node->name, 'toBe')) {
-            if (count($node->args) !== 1) {
-                return null;
-            }
+        if (count($node->args) !== 1) {
+            return null;
+        }
 
-            $arg = $node->args[0];
-            if (! $arg instanceof Arg || ! $arg->value instanceof LNumber || $arg->value->value !== 1) {
-                return null;
-            }
-        } elseif ($this->isName($node->name, 'toBeGreaterThan')) {
-            if (count($node->args) !== 1) {
-                return null;
-            }
+        $arg = $node->args[0];
+        if (! $arg instanceof Arg || ! $arg->value instanceof Int_) {
+            return null;
+        }
 
-            $arg = $node->args[0];
-            if (! $arg instanceof Arg || ! $arg->value instanceof LNumber || $arg->value->value !== 0) {
-                return null;
-            }
+        $expectedValue = $this->isName($node->name, 'toBeGreaterThan') ? 0 : 1;
+        if ($arg->value->value !== $expectedValue) {
+            return null;
         }
 
         $expectCall->args = [new Arg($subjectArg->value)];

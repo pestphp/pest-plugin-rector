@@ -11,6 +11,7 @@ use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
+use PhpParser\Node\Scalar\String_;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -71,6 +72,10 @@ CODE_SAMPLE
         }
 
         if ($expectArg instanceof ClassConstFetch) {
+            return null;
+        }
+
+        if ($expectArg instanceof String_ || $this->getType($expectArg)->isString()->yes()) {
             return null;
         }
 

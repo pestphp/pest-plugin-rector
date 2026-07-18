@@ -15,17 +15,21 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\Int_;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Finally_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\NodeVisitor;
+use Rector\Php72\NodeFactory\AnonymousFunctionFactory;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UseToThrowRector extends AbstractRector
 {
+    public function __construct(
+        private readonly AnonymousFunctionFactory $anonymousFunctionFactory
+    ) {}
+
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
     {
@@ -145,11 +149,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $arrowFunction = new ArrowFunction([
-            'expr' => $this->buildTryExpression($tryStmts),
-        ]);
-
-        $expectCall = new FuncCall(new Name('expect'), [new Arg($arrowFunction)]);
+        $expectCall = new FuncCall(new Name('expect'), [new Arg($this->buildTryCallable($tryStmts))]);
 
         $toThrowArgs = [new Arg(new ClassConstFetch($exceptionClass, 'class'))];
         if ($message instanceof Expr) {
@@ -162,19 +162,15 @@ CODE_SAMPLE
     /**
      * @param  array<Node\Stmt>  $stmts
      */
-    private function buildTryExpression(array $stmts): Expr
+    private function buildTryCallable(array $stmts): Expr
     {
         if (count($stmts) === 1 && $stmts[0] instanceof Expression) {
-            return $stmts[0]->expr;
+            return new ArrowFunction([
+                'expr' => $stmts[0]->expr,
+            ]);
         }
 
-        return new FuncCall(
-            new ArrowFunction([
-                'expr' => count($stmts) === 1 && $stmts[0] instanceof Expression
-                    ? $stmts[0]->expr
-                    : new Int_(0),
-            ])
-        );
+        return $this->anonymousFunctionFactory->create([], $stmts, null);
     }
 
     private function extractMessageAssertion(Catch_ $catch): ?Expr

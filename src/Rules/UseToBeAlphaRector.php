@@ -5,16 +5,21 @@ declare(strict_types=1);
 namespace Pest\Rector\Rules;
 
 use Pest\Rector\AbstractRector;
+use Pest\Rector\Concerns\ExpectChainValidation;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UseToBeAlphaRector extends AbstractRector
 {
+    use ExpectChainValidation;
+
+    private const FUNCTION_NAME = 'ctype_alpha';
+
+    private const MATCHER_NAME = 'toBeAlpha';
+
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
     {
@@ -49,33 +54,17 @@ CODE_SAMPLE
      */
     public function refactor(Node $node): ?Node
     {
-        if (! $this->isExpectChain($node)) {
+        $extracted = $this->extractFunctionFromExpect($node, [self::FUNCTION_NAME]);
+        if ($extracted === null) {
             return null;
         }
 
-        if (! $this->isName($node->name, 'toBeTrue')) {
+        $funcCall = $extracted['funcCall'];
+        if (count($funcCall->args) !== 1) {
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
-            return null;
-        }
-
-        $expectArg = $this->getExpectArgument($node);
-        if (! $expectArg instanceof FuncCall) {
-            return null;
-        }
-
-        if (! $this->isName($expectArg, 'ctype_alpha')) {
-            return null;
-        }
-
-        if (count($expectArg->args) !== 1) {
-            return null;
-        }
-
-        $ctypeArg = $expectArg->args[0];
+        $ctypeArg = $funcCall->args[0];
         if (! $ctypeArg instanceof Arg) {
             return null;
         }
@@ -84,10 +73,14 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall->args = [new Arg($ctypeArg->value)];
+        $needsNot = $this->calculateNeedsNot($extracted['methodName'], $node);
 
-        $node->name = new Identifier('toBeAlpha');
-
-        return $node;
+        return $this->buildMatcherCall(
+            $extracted['expectCall'],
+            $ctypeArg->value,
+            self::MATCHER_NAME,
+            [],
+            $needsNot
+        );
     }
 }

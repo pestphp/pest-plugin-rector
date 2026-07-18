@@ -29,7 +29,7 @@ final class UseToBeReadableWritableRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Converts is_readable()/is_writable() checks to toBeReadable()/toBeWritable() matchers',
+            'Converts is_readable()/is_writable() checks to toBeReadable()/toBeWritable() matchers (requires the custom expect()->extend() matchers of the same name; not registered in any set)',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

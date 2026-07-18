@@ -149,7 +149,10 @@ CODE_SAMPLE
                         [new Arg($matchArray)]
                     );
 
-                    $newStmts[] = new Expression($newMethodCall);
+                    $newExpression = new Expression($newMethodCall);
+                    $this->copyComments(array_slice($stmts, $i, $j - $i), $newExpression);
+
+                    $newStmts[] = $newExpression;
                     $hasChanged = true;
                 }
 
@@ -175,6 +178,10 @@ CODE_SAMPLE
     private function extractPropertyWithValue(MethodCall $methodCall): ?array
     {
         if (! $this->isName($methodCall->name, 'toHaveProperty')) {
+            return null;
+        }
+
+        if ($this->hasNotModifier($methodCall)) {
             return null;
         }
 

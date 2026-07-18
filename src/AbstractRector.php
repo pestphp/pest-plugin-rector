@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Pest\Rector;
 
-use Pest\Expectation;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -131,14 +130,44 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         return $holder->args[0]->value;
     }
 
-    protected function isExpectValueOfType(MethodCall $methodCall, string $typeCheck): bool
+    protected function isMatcherAppliedDirectly(MethodCall $methodCall): bool
     {
-        $expectCall = $this->getExpectFuncCall($methodCall);
-        if (! $expectCall instanceof FuncCall) {
+        $holder = $this->getMatcherSubjectHolder($methodCall);
+
+        if (! $holder instanceof FuncCall && ! $holder instanceof MethodCall) {
             return false;
         }
 
-        $valueType = $this->getType($expectCall)->getTemplateType(Expectation::class, 'TValue');
+        $var = $methodCall->var;
+
+        if ($var instanceof PropertyFetch && $this->isName($var->name, 'not')) {
+            $var = $var->var;
+        }
+
+        return $var === $holder;
+    }
+
+    protected function setMatcherSubject(MethodCall $methodCall, Expr $subject): bool
+    {
+        $holder = $this->getMatcherSubjectHolder($methodCall);
+
+        if (! $holder instanceof FuncCall && ! $holder instanceof MethodCall) {
+            return false;
+        }
+
+        $holder->args = [new Arg($subject)];
+
+        return true;
+    }
+
+    protected function isExpectValueOfType(MethodCall $methodCall, string $typeCheck): bool
+    {
+        $subject = $this->getMatcherSubject($methodCall);
+        if (! $subject instanceof Expr) {
+            return false;
+        }
+
+        $valueType = $this->getType($subject);
 
         return match ($typeCheck) {
             'boolean' => ! $valueType->isBoolean()->no(),
@@ -250,6 +279,22 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         }
 
         return $result;
+    }
+
+    /**
+     * @param  array<Node>  $sources
+     */
+    protected function copyComments(array $sources, Node $target): void
+    {
+        $comments = (array) $target->getAttribute('comments', []);
+
+        foreach ($sources as $source) {
+            $comments = array_merge($comments, (array) $source->getAttribute('comments', []));
+        }
+
+        if ($comments !== []) {
+            $target->setAttribute('comments', $comments);
+        }
     }
 
     /**

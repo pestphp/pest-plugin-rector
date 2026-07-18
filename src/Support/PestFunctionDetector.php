@@ -110,11 +110,6 @@ final class PestFunctionDetector
         return null;
     }
 
-    public static function closureUsesThis(Closure|ArrowFunction $closure): bool
-    {
-        return self::closureRequiresInstanceBinding($closure);
-    }
-
     public static function closureRequiresInstanceBinding(Closure|ArrowFunction $closure): bool
     {
         return array_any($closure->getSubNodeNames(), fn (string $subNodeName): bool => self::subNodeUsesThis($closure->{$subNodeName}));

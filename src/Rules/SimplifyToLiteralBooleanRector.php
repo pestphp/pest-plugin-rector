@@ -76,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $newMatcher = $this->getMatcherForLiteral($arg->value);
+        $newMatcher = $this->getMatcherForLiteral($node, $arg->value);
         if ($newMatcher === null) {
             return null;
         }
@@ -87,32 +87,47 @@ CODE_SAMPLE
         return $node;
     }
 
-    private function getMatcherForLiteral(Node $value): ?string
+    private function getMatcherForLiteral(MethodCall $node, Node $value): ?string
     {
+        $isStrict = $this->isName($node->name, 'toBe');
+
         if ($value instanceof ConstFetch) {
             $name = mb_strtolower($value->name->toString());
 
-            if ($name === 'true') {
-                return 'toBeTrue';
+            if (($name === 'true' || $name === 'false') && ($isStrict || $this->isSubjectDefinitely($node, 'boolean'))) {
+                return $name === 'true' ? 'toBeTrue' : 'toBeFalse';
             }
 
-            if ($name === 'false') {
-                return 'toBeFalse';
-            }
-
-            if ($name === 'null') {
+            if ($name === 'null' && $isStrict) {
                 return 'toBeNull';
             }
         }
 
-        if ($value instanceof Array_ && $value->items === []) {
+        if ($value instanceof Array_ && $value->items === [] && $this->isSubjectDefinitely($node, 'array')) {
             return 'toBeEmpty';
         }
 
-        if ($value instanceof String_ && $value->value === '') {
+        if ($value instanceof String_ && $value->value === '' && $this->isSubjectDefinitely($node, 'string')) {
             return 'toBeEmpty';
         }
 
         return null;
+    }
+
+    private function isSubjectDefinitely(MethodCall $node, string $type): bool
+    {
+        $subject = $this->getMatcherSubject($node);
+        if (! $subject instanceof Node) {
+            return false;
+        }
+
+        $subjectType = $this->getType($subject);
+
+        return match ($type) {
+            'boolean' => $subjectType->isBoolean()->yes(),
+            'array' => $subjectType->isArray()->yes(),
+            'string' => $subjectType->isString()->yes(),
+            default => false,
+        };
     }
 }

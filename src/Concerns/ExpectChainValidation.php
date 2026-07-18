@@ -19,7 +19,7 @@ trait ExpectChainValidation
     /**
      * @param  array<string>  $targetFunctions  List of function names to match (e.g., ['is_file', 'is_dir'])
      * @param  array<string>  $validMethods  Matcher methods to look for (default: toBeTrue, toBeFalse)
-     * @return array{expectCall: FuncCall, funcCall: FuncCall, methodName: string}|null
+     * @return array{expectCall: FuncCall|MethodCall, funcCall: FuncCall, methodName: string}|null
      */
     protected function extractFunctionFromExpect(
         MethodCall $node,
@@ -40,8 +40,12 @@ trait ExpectChainValidation
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $expectCall = $this->getMatcherSubjectHolder($node);
+        if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
+            return null;
+        }
+
+        if (! $this->isMatcherAppliedDirectly($node)) {
             return null;
         }
 
@@ -89,7 +93,7 @@ trait ExpectChainValidation
      * @param  array<Arg>  $matcherArgs  Arguments for the matcher method
      */
     protected function buildMatcherCall(
-        FuncCall $expectCall,
+        FuncCall|MethodCall $expectCall,
         Expr $newExpectValue,
         string $matcherMethod,
         array $matcherArgs,
@@ -109,5 +113,10 @@ trait ExpectChainValidation
     protected function isFalse(Node $node): bool
     {
         return $node instanceof ConstFetch && $this->isName($node, 'false');
+    }
+
+    protected function isTrue(Node $node): bool
+    {
+        return $node instanceof ConstFetch && $this->isName($node, 'true');
     }
 }

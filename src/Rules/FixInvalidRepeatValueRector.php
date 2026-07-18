@@ -85,7 +85,7 @@ CODE_SAMPLE
                 return false;
             }
 
-            $arg->value = new Int_(1);
+            $arg->value->value = 1;
 
             return true;
         }

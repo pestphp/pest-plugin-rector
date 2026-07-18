@@ -1,8 +1,8 @@
 <?php
 
-expect(in_array($value, ['pending', 'active']))->toBeTrue();
-expect(in_array($status, $allowedStatuses))->toBeTrue();
-expect(in_array($value, ['pending', 'active']))->toBeFalse();
+expect(in_array($value, ['pending', 'active'], true))->toBeTrue();
+expect(in_array($status, $allowedStatuses, true))->toBeTrue();
+expect(in_array($value, ['pending', 'active'], true))->toBeFalse();
 expect(in_array($value, $list, true))->toBeTrue();
 
 ?>

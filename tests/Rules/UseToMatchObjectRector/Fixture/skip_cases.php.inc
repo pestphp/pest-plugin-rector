@@ -10,3 +10,7 @@ expect($user)->toHaveProperty('email');
 // Skip different subjects
 expect($user)->toHaveProperty('name', 'Nuno');
 expect($post)->toHaveProperty('title', 'Hello');
+
+// Skip negated assertions — merging would drop the not
+expect($user)->not->toHaveProperty('name', 'Enuno');
+expect($user)->toHaveProperty('email', 'nuno@example.com');

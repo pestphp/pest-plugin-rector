@@ -7,8 +7,8 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
@@ -76,12 +76,12 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectArgument = $this->getExpectArgument($node);
+        $expectArgument = $this->getMatcherSubject($node);
         if (! $expectArgument instanceof Expr) {
             return null;
         }
 
-        if (! $this->isExpectValueOfType($node, 'boolean')) {
+        if ($this->getType($expectArgument)->isBoolean()->no()) {
             return null;
         }
 
@@ -92,35 +92,15 @@ CODE_SAMPLE
 
     private function removeNotAndReplaceMatcher(MethodCall $methodCall, string $newMatcher): ?MethodCall
     {
-        $expectCall = $this->getExpectFuncCall($methodCall);
-        if (! $expectCall instanceof FuncCall) {
+        $notProperty = $methodCall->var;
+
+        if (! $notProperty instanceof PropertyFetch) {
             return null;
         }
 
-        $methods = $this->collectChainMethods($methodCall);
+        $methodCall->var = $notProperty->var;
+        $methodCall->name = new Identifier($newMatcher);
 
-        $methods = array_values(array_filter($methods, function (array $m): bool {
-            if (empty($m['is_property'])) {
-                return true;
-            }
-
-            $nameValue = $m['name'];
-
-            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-
-            return $name !== 'not';
-        }));
-
-        if ($methods !== []) {
-            $lastIndex = count($methods) - 1;
-            $methods[$lastIndex] = [
-                'name' => new Identifier($newMatcher),
-                'args' => $methods[$lastIndex]['args'],
-            ];
-        }
-
-        $result = $this->rebuildMethodChain($expectCall, $methods);
-
-        return $result instanceof MethodCall ? $result : null;
+        return $methodCall;
     }
 }

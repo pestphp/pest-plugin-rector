@@ -4,18 +4,10 @@ declare(strict_types=1);
 
 namespace Pest\Rector\Rules;
 
-use Pest\Rector\AbstractRector;
-use PhpParser\Node;
-use PhpParser\Node\Arg;
-use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Expr\MethodCall;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class UseToBeCamelCaseRector extends AbstractRector
+final class UseToBeCamelCaseRector extends AbstractStrCaseRector
 {
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
@@ -38,90 +30,13 @@ CODE_SAMPLE
 
     // @codeCoverageIgnoreEnd
 
-    /**
-     * @return array<class-string<Node>>
-     */
-    public function getNodeTypes(): array
+    protected function getStrMethodName(): string
     {
-        return [MethodCall::class];
+        return 'camel';
     }
 
-    /**
-     * @param  MethodCall  $node
-     */
-    public function refactor(Node $node): ?Node
+    protected function getMatcherName(): string
     {
-        if (! $this->isExpectChain($node)) {
-            return null;
-        }
-
-        if (! $this->isName($node->name, 'toBeTrue')) {
-            return null;
-        }
-
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
-            return null;
-        }
-
-        $expectArg = $this->getExpectArgument($node);
-        if (! $expectArg instanceof Identical) {
-            return null;
-        }
-
-        if ($this->isStrMethod($expectArg->left, 'camel')) {
-            $staticCall = $expectArg->left;
-            if ($this->nodeComparator->areNodesEqual($this->getFirstStaticArg($staticCall), $expectArg->right)) {
-                if ($this->getType($expectArg->right)->isString()->no()) {
-                    return null;
-                }
-
-                $expectCall->args = [new Arg($expectArg->right)];
-                $node->name = new Identifier('toBeCamelCase');
-
-                return $node;
-            }
-        }
-
-        if ($this->isStrMethod($expectArg->right, 'camel')) {
-            $staticCall = $expectArg->right;
-            if ($this->nodeComparator->areNodesEqual($expectArg->left, $this->getFirstStaticArg($staticCall))) {
-                if ($this->getType($expectArg->left)->isString()->no()) {
-                    return null;
-                }
-
-                $expectCall->args = [new Arg($expectArg->left)];
-                $node->name = new Identifier('toBeCamelCase');
-
-                return $node;
-            }
-        }
-
-        return null;
-    }
-
-    private function isStrMethod(?Node $node, string $method): bool
-    {
-        return $node instanceof StaticCall
-            && $this->isName($node->class, 'Illuminate\Support\Str')
-            && $this->isName($node->name, $method);
-    }
-
-    private function getFirstStaticArg(?Node $node): ?Node
-    {
-        if (! $node instanceof StaticCall) {
-            return null;
-        }
-
-        if (! isset($node->args[0])) {
-            return null;
-        }
-
-        $arg = $node->args[0];
-        if (! $arg instanceof Arg) {
-            return null;
-        }
-
-        return $arg->value;
+        return 'toBeCamelCase';
     }
 }

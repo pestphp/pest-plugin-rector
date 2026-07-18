@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\GreaterOrEqual;
 use PhpParser\Node\Expr\BinaryOp\Smaller;
 use PhpParser\Node\Expr\BinaryOp\SmallerOrEqual;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
@@ -68,32 +67,27 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
-            return null;
-        }
+        $expectArg = $this->getMatcherSubject($node);
 
-        $expectArg = $this->getExpectArgument($node);
-
-        return $this->handleComparison($expectArg, $expectCall, $node);
+        return $this->handleComparison($expectArg, $node);
     }
 
-    private function handleComparison(mixed $expectArg, FuncCall $expectCall, MethodCall $node): ?MethodCall
+    private function handleComparison(mixed $expectArg, MethodCall $node): ?MethodCall
     {
         if ($expectArg instanceof Greater) {
-            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeGreaterThan', $expectCall, $node);
+            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeGreaterThan', $node);
         }
 
         if ($expectArg instanceof GreaterOrEqual) {
-            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeGreaterThanOrEqual', $expectCall, $node);
+            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeGreaterThanOrEqual', $node);
         }
 
         if ($expectArg instanceof Smaller) {
-            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeLessThan', $expectCall, $node);
+            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeLessThan', $node);
         }
 
         if ($expectArg instanceof SmallerOrEqual) {
-            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeLessThanOrEqual', $expectCall, $node);
+            return $this->transformComparison($expectArg->left, $expectArg->right, 'toBeLessThanOrEqual', $node);
         }
 
         return null;
@@ -103,10 +97,12 @@ CODE_SAMPLE
         Expr $left,
         Expr $right,
         string $matcher,
-        FuncCall $expectCall,
         MethodCall $node
-    ): MethodCall {
-        $expectCall->args = [new Arg($left)];
+    ): ?MethodCall {
+        if (! $this->setMatcherSubject($node, $left)) {
+            return null;
+        }
+
         $node->name = new Identifier($matcher);
         $node->args = [new Arg($right)];
 

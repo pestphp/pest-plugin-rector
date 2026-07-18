@@ -71,12 +71,12 @@ CODE_SAMPLE
         }
 
         if ($this->isNames($node->name, ['toBe', 'toEqual']) && $this->hasZeroArg($node)) {
-            $expectCall = $this->getExpectFuncCall($node);
-            if (! $expectCall instanceof FuncCall) {
+            $expectCall = $this->getMatcherSubjectHolder($node);
+            if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
                 return null;
             }
 
-            $expectArg = $this->getExpectArgument($node);
+            $expectArg = $this->getMatcherSubject($node);
             if (! $expectArg instanceof FuncCall) {
                 return null;
             }
@@ -102,12 +102,12 @@ CODE_SAMPLE
         }
 
         if ($this->isNames($node->name, ['toBeTrue', 'toBeFalse'])) {
-            $expectCall = $this->getExpectFuncCall($node);
-            if (! $expectCall instanceof FuncCall) {
+            $expectCall = $this->getMatcherSubjectHolder($node);
+            if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
                 return null;
             }
 
-            $expectArg = $this->getExpectArgument($node);
+            $expectArg = $this->getMatcherSubject($node);
             if ($expectArg instanceof Empty_) {
                 $methodName = $node->name instanceof Identifier ? $node->name->name : null;
                 if ($methodName === null) {

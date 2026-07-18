@@ -8,7 +8,7 @@ beforeAll(function (): void {
     self::$configFilePath = __DIR__.'/config/configured_rule.php';
 });
 
-test('', function (string $filePath): void {
+test('fixtures', function (string $filePath): void {
     $this->doTestFile($filePath);
 })
     ->with(fn (): Generator => FixtureFileFinder::yieldDirectory(__DIR__.'/Fixture'));

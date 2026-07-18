@@ -20,12 +20,12 @@ final class UseToBeInRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Converts in_array() with value first to toBeIn() matcher',
+            'Converts strict in_array() checks to the toBeIn() matcher',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'
-expect(in_array($value, ['pending', 'active']))->toBeTrue();
-expect(in_array($status, $allowedStatuses))->toBeTrue();
+expect(in_array($value, ['pending', 'active'], true))->toBeTrue();
+expect(in_array($status, $allowedStatuses, true))->toBeTrue();
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
@@ -67,6 +67,15 @@ CODE_SAMPLE
         $haystackArg = $funcCall->args[1];
 
         if (! $needleArg instanceof Arg || ! $haystackArg instanceof Arg) {
+            return null;
+        }
+
+        if (count($funcCall->args) !== 3) {
+            return null;
+        }
+
+        $strictArg = $funcCall->args[2];
+        if (! $strictArg instanceof Arg || ! $this->isTrue($strictArg->value)) {
             return null;
         }
 

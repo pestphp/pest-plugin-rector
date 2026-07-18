@@ -95,6 +95,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if ($node->keyVar instanceof Variable && $this->loopVariableUsedInChain($methodCall, $node->keyVar)) {
+            return null;
+        }
+
         $expectCall->args[0] = $this->nodeFactory->createArg($node->expr);
 
         $methods = $this->collectChainMethods($methodCall);

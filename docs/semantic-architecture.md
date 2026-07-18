@@ -5,7 +5,7 @@ Rector Pest now has two layers:
 - syntax-oriented Rector rules that rewrite obvious Pest patterns
 - semantic remediation infrastructure for diagnostics that need deterministic, behavior-safe reasoning
 
-The semantic layer is intentionally analyzer-agnostic. Rector Pest does not need PestStan at runtime to classify issues, resolve identifiers, or map safe fixes for package consumers. This repository still uses PestStan as a development-only PHPStan extension, which is separate from the runtime interoperability contract exposed by Rector Pest itself.
+The semantic layer is intentionally analyzer-agnostic. Rector Pest does not need the Pest PHPStan plugin at runtime to classify issues, resolve identifiers, or map safe fixes for package consumers. This repository still uses the Pest PHPStan plugin as a development-only PHPStan extension, which is separate from the runtime interoperability contract exposed by Rector Pest itself.
 
 ## Design Goals
 
@@ -80,4 +80,4 @@ The package is ready to consume diagnostics from external tools through canonica
 - DTOs expose serializable metadata for future IDE, SARIF, or analyzer integrations
 - issue-to-fix mapping is explicit and test-covered
 
-This makes it possible to share diagnostics across Rector Pest, PestStan, editor tooling, and future ecosystem packages without duplicating transformation logic.
+This makes it possible to share diagnostics across Rector Pest, the Pest PHPStan plugin, editor tooling, and future ecosystem packages without duplicating transformation logic.

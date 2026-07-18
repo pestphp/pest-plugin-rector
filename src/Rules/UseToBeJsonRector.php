@@ -114,6 +114,10 @@ CODE_SAMPLE
         $expectsValidJson = ($isNotIdentical && $methodName === 'toBeTrue')
             || ($isIdentical && $methodName === 'toBeFalse');
 
+        if ($this->hasNotModifier($node)) {
+            $expectsValidJson = ! $expectsValidJson;
+        }
+
         $expectCall->args[0] = new Arg($stringArg->value);
 
         if (! $expectsValidJson) {

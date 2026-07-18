@@ -61,8 +61,8 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
+        $expectCall = $this->getMatcherSubjectHolder($node);
+        if (! $expectCall instanceof FuncCall && ! $expectCall instanceof MethodCall) {
             return null;
         }
 
@@ -71,7 +71,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $expectArg = $this->getExpectArgument($node);
+            $expectArg = $this->getMatcherSubject($node);
             if (! $this->isCountFunction($expectArg)) {
                 return null;
             }
@@ -124,7 +124,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            $expectArgument = $this->getExpectArgument($node);
+            $expectArgument = $this->getMatcherSubject($node);
             if ($expectArgument instanceof Expr) {
                 $expectArgType = $this->getType($expectArgument);
                 if ($expectArgType->isArray()->no() && $expectArgType->isIterable()->no()) {

@@ -8,7 +8,6 @@ use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\ClassConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
@@ -62,12 +61,7 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall = $this->getExpectFuncCall($node);
-        if (! $expectCall instanceof FuncCall) {
-            return null;
-        }
-
-        $expectArg = $this->getExpectArgument($node);
+        $expectArg = $this->getMatcherSubject($node);
         if (! $expectArg instanceof Instanceof_) {
             return null;
         }
@@ -79,7 +73,9 @@ CODE_SAMPLE
             return null;
         }
 
-        $expectCall->args = [new Arg($object)];
+        if (! $this->setMatcherSubject($node, $object)) {
+            return null;
+        }
 
         $classConstFetch = new ClassConstFetch($class, new Identifier('class'));
         $node->name = new Identifier('toBeInstanceOf');

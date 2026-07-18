@@ -93,9 +93,12 @@ CODE_SAMPLE
                 continue;
             }
 
-            $newStmts[] = new Expression(
+            $newExpression = new Expression(
                 $this->buildToThrowCall($conversion['exception'], $conversion['message'], $conversion['action'])
             );
+            $this->copyComments(array_slice($stmts, $i, $conversion['consumed']), $newExpression);
+
+            $newStmts[] = $newExpression;
             $i += $conversion['consumed'];
             $hasChanged = true;
         }

@@ -8,7 +8,7 @@ beforeAll(function (): void {
     self::$configFilePath = __DIR__.'/config/configured_rule.php';
 });
 
-test('', function (string $filePath): void {
+test('fixtures', function (string $filePath): void {
     $directory = dirname($filePath);
 
     while (mb_strtolower(basename($directory)) !== 'tests') {

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pest\Rector\Rules\Pest2ToPest3;
 
 use Pest\Rector\AbstractRector;
+use Pest\Rector\Analyzer\PestChainAnalyzer;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -324,29 +325,15 @@ CODE_SAMPLE
 
     private function isPestChain(MethodCall $methodCall): bool
     {
-        $current = $methodCall->var;
-
-        while ($current instanceof MethodCall) {
-            $current = $current->var;
-        }
-
-        if ($current instanceof FuncCall) {
-            return $this->isName($current, 'pest');
-        }
-
-        return false;
+        return $this->getPestFuncCall($methodCall) instanceof FuncCall;
     }
 
     private function getPestFuncCall(MethodCall $methodCall): ?FuncCall
     {
-        $current = $methodCall->var;
+        $root = PestChainAnalyzer::getRootFuncCall($methodCall);
 
-        while ($current instanceof MethodCall) {
-            $current = $current->var;
-        }
-
-        if ($current instanceof FuncCall && $this->isName($current, 'pest')) {
-            return $current;
+        if ($root instanceof FuncCall && $this->isName($root, 'pest')) {
+            return $root;
         }
 
         return null;

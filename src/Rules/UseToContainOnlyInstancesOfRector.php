@@ -7,11 +7,9 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
-use RuntimeException;
 use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
@@ -67,7 +65,11 @@ CODE_SAMPLE
             return null;
         }
 
-        if (! $this->hasEachModifier($node)) {
+        if (! $node->var instanceof PropertyFetch || ! $this->isName($node->var->name, 'each')) {
+            return null;
+        }
+
+        if ($node->var->var instanceof PropertyFetch && $this->isName($node->var->var->name, 'not')) {
             return null;
         }
 
@@ -76,38 +78,10 @@ CODE_SAMPLE
             return null;
         }
 
-        $node->var = $this->removeEachFromChain($node->var);
+        $node->var = $node->var->var;
 
         $node->name = new Identifier('toContainOnlyInstancesOf');
 
         return $node;
-    }
-
-    private function hasEachModifier(MethodCall $methodCall): bool
-    {
-        $var = $methodCall->var;
-
-        while ($var instanceof PropertyFetch) {
-            if ($this->isName($var->name, 'each')) {
-                return true;
-            }
-
-            $var = $var->var;
-        }
-
-        return false;
-    }
-
-    private function removeEachFromChain(Node $node): Expr
-    {
-        if ($node instanceof PropertyFetch && $this->isName($node->name, 'each')) {
-            return $node->var;
-        }
-
-        if ($node instanceof Expr) {
-            return $node;
-        }
-
-        throw new RuntimeException('Node is not an Expr');
     }
 }
