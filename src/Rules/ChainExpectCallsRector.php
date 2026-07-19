@@ -313,6 +313,7 @@ CODE_SAMPLE
             return false;
         }
 
+        $targetExpectArg->setAttribute(AttributeKey::ORIGINAL_NODE, null);
         $andArg = new Arg($targetExpectArg);
         $andCall = new MethodCall($firstMethodCall, 'and', [$andArg]);
 
