@@ -109,7 +109,7 @@ final class ConvertAssertToExpectRector extends AbstractRector
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Converts PHPUnit assertion method calls to Pest expect() chains',
+            'Converts $this->assert*() calls to Pest expect() chains',
             [
                 new CodeSample(
                     <<<'CODE_SAMPLE'

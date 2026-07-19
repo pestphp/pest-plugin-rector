@@ -2,7 +2,11 @@
 
 declare(strict_types=1);
 
+use Pest\Rector\Rules\ChainExpectCallsRector;
+use Pest\Rector\Rules\ConvertAssertToExpectRector;
 use Pest\Rector\Rules\ConvertBeforeAllInDescribeRector;
+use Pest\Rector\Rules\ConvertExpectExceptionToThrowRector;
+use Pest\Rector\Rules\EnsureTypeChecksFirstRector;
 use Pest\Rector\Rules\FixInvalidRepeatValueRector;
 use Pest\Rector\Rules\RemoveDebugExpectationsRector;
 use Pest\Rector\Rules\RemoveOnlyRector;
@@ -57,7 +61,7 @@ use Pest\Rector\Rules\UseTypeMatchersRector;
 use Rector\Config\RectorConfig;
 
 /**
- * Code quality improvements for Pest tests
+ * Coding style improvements for Pest tests
  *
  * This set contains rules for:
  * - Better test readability and expressiveness
@@ -68,6 +72,9 @@ use Rector\Config\RectorConfig;
  */
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__.'/../config.php');
+
+    // Assertion rewrites
+    $rectorConfig->rule(ConvertAssertToExpectRector::class);
 
     // Iteration
     $rectorConfig->rule(UseEachModifierRector::class);
@@ -144,4 +151,9 @@ return static function (RectorConfig $rectorConfig): void {
 
     // Exception matchers
     $rectorConfig->rule(UseToThrowRector::class);
+    $rectorConfig->rule(ConvertExpectExceptionToThrowRector::class);
+
+    // Expectation chaining (runs last, so the matchers introduced above can be chained)
+    $rectorConfig->rule(ChainExpectCallsRector::class);      // Merges separate expect() calls
+    $rectorConfig->rule(EnsureTypeChecksFirstRector::class); // Reorders type checks within chains
 };

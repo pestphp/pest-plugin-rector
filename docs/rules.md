@@ -1,4 +1,4 @@
-# 71 Rules Overview
+# 60 Rules Overview
 
 ## ChainExpectCallsRector
 
@@ -39,7 +39,7 @@ Chains multiple `expect()` calls on the same value into a single chained expecta
 
 ## ConvertAssertToExpectRector
 
-Converts PHPUnit assertion method calls to Pest `expect()` chains
+Converts `$this->assert*()` calls to Pest `expect()` chains
 
 - class: [`Pest\Rector\Rules\ConvertAssertToExpectRector`](../src/Rules/ConvertAssertToExpectRector.php)
 
@@ -372,100 +372,6 @@ Changes `expect($object)->toHaveMethod()` to `expect($object::class)->toHaveMeth
 
 <br>
 
-## UseBrowserAriaAndDataAttributeAssertionsRector
-
-Converts expect($page->attribute($selector, "aria-*"))->toBe($value) to `$page->assertAriaAttribute($selector,` `$attr,` `$value)` and the data-* equivalent
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserAriaAndDataAttributeAssertionsRector`](../src/Rules/Browser/UseBrowserAriaAndDataAttributeAssertionsRector.php)
-
-```diff
--expect($page->attribute('button', 'aria-label'))->toBe('Close');
--expect($page->attribute('div', 'data-id'))->toBe('123');
-+$page->assertAriaAttribute('button', 'label', 'Close');
-+$page->assertDataAttribute('div', 'id', '123');
-```
-
-<br>
-
-## UseBrowserAttributeAssertionsRector
-
-Converts expect($page->attribute($selector, `$attr))->toBe($value)` to `$page->assertAttribute($selector,` `$attr,` `$value)`
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserAttributeAssertionsRector`](../src/Rules/Browser/UseBrowserAttributeAssertionsRector.php)
-
-```diff
--expect($page->attribute('img', 'alt'))->toBe('Profile Picture');
--expect($page->attribute('div', 'class'))->toContain('container');
--expect($page->attribute('div', 'class'))->not->toContain('hidden');
--expect($page->attribute('button', 'disabled'))->toBeNull();
-+$page->assertAttribute('img', 'alt', 'Profile Picture');
-+$page->assertAttributeContains('div', 'class', 'container');
-+$page->assertAttributeDoesntContain('div', 'class', 'hidden');
-+$page->assertAttributeMissing('button', 'disabled');
-```
-
-<br>
-
-## UseBrowserScriptAssertionsRector
-
-Converts expect($page->script($expression))->toBe($value) to `$page->assertScript($expression,` `$value)`
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserScriptAssertionsRector`](../src/Rules/Browser/UseBrowserScriptAssertionsRector.php)
-
-```diff
--expect($page->script('document.title'))->toBe('Home Page');
--expect($page->script('document.querySelector(".btn").disabled'))->toBe(true);
--expect($page->script('1 + 1'))->toEqual(2);
-+$page->assertScript('document.title', 'Home Page');
-+$page->assertScript('document.querySelector(".btn").disabled', true);
-+$page->assertScript('1 + 1', 2);
-```
-
-<br>
-
-## UseBrowserSourceAssertionsRector
-
-Converts `expect($page->content())->toContain($html)` to `$page->assertSourceHas($html)`
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserSourceAssertionsRector`](../src/Rules/Browser/UseBrowserSourceAssertionsRector.php)
-
-```diff
--expect($page->content())->toContain('<h1>Welcome</h1>');
--expect($page->content())->not->toContain('<div class="error">');
-+$page->assertSourceHas('<h1>Welcome</h1>');
-+$page->assertSourceMissing('<div class="error">');
-```
-
-<br>
-
-## UseBrowserUrlAssertionsRector
-
-Converts `expect($page->url())->toBe($url)` to `$page->assertUrlIs($url)`
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserUrlAssertionsRector`](../src/Rules/Browser/UseBrowserUrlAssertionsRector.php)
-
-```diff
--expect($page->url())->toBe('https://example.com/home');
-+$page->assertUrlIs('https://example.com/home');
-```
-
-<br>
-
-## UseBrowserValueAssertionsRector
-
-Converts expect($page->value($selector))->toBe($value) to `$page->assertValue($selector,` `$value)`
-
-- class: [`Pest\Rector\Rules\Browser\UseBrowserValueAssertionsRector`](../src/Rules/Browser/UseBrowserValueAssertionsRector.php)
-
-```diff
--expect($page->value('input[name=email]'))->toBe('test@example.com');
--expect($page->value('input[name=email]'))->not->toBe('wrong@example.com');
-+$page->assertValue('input[name=email]', 'test@example.com');
-+$page->assertValueIsNot('input[name=email]', 'wrong@example.com');
-```
-
-<br>
-
 ## UseEachModifierRector
 
 Converts foreach loops with `expect()` calls to use the ->each modifier
@@ -565,19 +471,6 @@ Converts expect($value >= `$min` && `$value` <= `$max)->toBeTrue()` to expect($v
 -expect($age >= 18 && $age <= 65)->toBeTrue();
 +expect($value)->toBeBetween(1, 10);
 +expect($age)->toBeBetween(18, 65);
-```
-
-<br>
-
-## UseToBeCamelCaseRector
-
-Converts `Str::camel()` equality checks to `toBeCamelCase()` matcher (requires illuminate/support)
-
-- class: [`Pest\Rector\Rules\UseToBeCamelCaseRector`](../src/Rules/UseToBeCamelCaseRector.php)
-
-```diff
--expect(Str::camel($value) === $value)->toBeTrue();
-+expect($value)->toBeCamelCase();
 ```
 
 <br>
@@ -685,19 +578,6 @@ Converts `json_decode()` null checks to `toBeJson()` matcher
 
 <br>
 
-## UseToBeKebabCaseRector
-
-Converts `Str::kebab()` equality checks to `toBeKebabCase()` matcher (requires illuminate/support)
-
-- class: [`Pest\Rector\Rules\UseToBeKebabCaseRector`](../src/Rules/UseToBeKebabCaseRector.php)
-
-```diff
--expect(Str::kebab($value) === $value)->toBeTrue();
-+expect($value)->toBeKebabCase();
-```
-
-<br>
-
 ## UseToBeListRector
 
 Converts `array_is_list()` checks to `toBeList()` matcher
@@ -750,45 +630,6 @@ Converts `is_readable()/is_writable()` checks to `toBeReadable()/toBeWritable()`
 -expect(is_writable($file))->toBeTrue();
 +expect($path)->toBeReadable();
 +expect($file)->toBeWritable();
-```
-
-<br>
-
-## UseToBeSlugRector
-
-Converts `Str::slug()` equality checks to `toBeSlug()` matcher (requires illuminate/support)
-
-- class: [`Pest\Rector\Rules\UseToBeSlugRector`](../src/Rules/UseToBeSlugRector.php)
-
-```diff
--expect(Str::slug($value) === $value)->toBeTrue();
-+expect($value)->toBeSlug();
-```
-
-<br>
-
-## UseToBeSnakeCaseRector
-
-Converts `Str::snake()` equality checks to `toBeSnakeCase()` matcher (requires illuminate/support)
-
-- class: [`Pest\Rector\Rules\UseToBeSnakeCaseRector`](../src/Rules/UseToBeSnakeCaseRector.php)
-
-```diff
--expect(Str::snake($value) === $value)->toBeTrue();
-+expect($value)->toBeSnakeCase();
-```
-
-<br>
-
-## UseToBeStudlyCaseRector
-
-Converts `Str::studly()` equality checks to `toBeStudlyCase()` matcher (requires illuminate/support)
-
-- class: [`Pest\Rector\Rules\UseToBeStudlyCaseRector`](../src/Rules/UseToBeStudlyCaseRector.php)
-
-```diff
--expect(Str::studly($value) === $value)->toBeTrue();
-+expect($value)->toBeStudlyCase();
 ```
 
 <br>
