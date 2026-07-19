@@ -8,6 +8,9 @@ use Pest\Rector\Rules\ConvertBeforeAllInDescribeRector;
 use Pest\Rector\Rules\ConvertExpectExceptionToThrowRector;
 use Pest\Rector\Rules\EnsureTypeChecksFirstRector;
 use Pest\Rector\Rules\FixInvalidRepeatValueRector;
+use Pest\Rector\Rules\Pest2ToPest3\TapToDeferRector;
+use Pest\Rector\Rules\Pest2ToPest3\ToHaveMethodOnClassRector;
+use Pest\Rector\Rules\Pest2ToPest3\UsesToExtendRector;
 use Pest\Rector\Rules\RemoveDebugExpectationsRector;
 use Pest\Rector\Rules\RemoveOnlyRector;
 use Pest\Rector\Rules\RemoveRedundantLiteralTypeExpectationRector;
@@ -64,6 +67,7 @@ use Rector\Config\RectorConfig;
  * Coding style improvements for Pest tests
  *
  * This set contains rules for:
+ * - Migrating Pest v2 code to v3 (see https://pestphp.com/docs/upgrade-guide)
  * - Better test readability and expressiveness
  * - Removing redundant code in tests
  * - Using more expressive Pest APIs
@@ -72,6 +76,11 @@ use Rector\Config\RectorConfig;
  */
 return static function (RectorConfig $rectorConfig): void {
     $rectorConfig->import(__DIR__.'/../config.php');
+
+    // Pest v2 to v3 migration
+    $rectorConfig->rule(TapToDeferRector::class);
+    $rectorConfig->rule(ToHaveMethodOnClassRector::class);
+    $rectorConfig->rule(UsesToExtendRector::class);
 
     // Assertion rewrites
     $rectorConfig->rule(ConvertAssertToExpectRector::class);
