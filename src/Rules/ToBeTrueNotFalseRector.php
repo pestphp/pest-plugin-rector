@@ -81,7 +81,6 @@ CODE_SAMPLE
             return null;
         }
 
-        // ->no() misses T|false unions, `false` is a bool
         if (! $this->getType($expectArgument)->isBoolean()->yes()) {
             return null;
         }
