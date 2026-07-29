@@ -100,6 +100,10 @@ CODE_SAMPLE
         }
 
         if (isset(self::FLIPPABLE_MATCHERS[$finalMethodName])) {
+            if (! $this->getType($arg->value->expr)->isBoolean()->yes()) {
+                return null;
+            }
+
             $expectCall->args[0] = $this->nodeFactory->createArg($arg->value->expr);
 
             $this->flipFinalMatcher($node, self::FLIPPABLE_MATCHERS[$finalMethodName]);
