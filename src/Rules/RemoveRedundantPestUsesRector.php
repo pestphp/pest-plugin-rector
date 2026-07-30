@@ -28,7 +28,7 @@ use Throwable;
 final class RemoveRedundantPestUsesRector extends AbstractRector
 {
     /** @var array<string, true> */
-    private const GLOBAL_CHAIN_TOLERATED_METHODS = [
+    private const array GLOBAL_CHAIN_TOLERATED_METHODS = [
         'extend' => true,
         'use' => true,
         'uses' => true,
@@ -283,7 +283,7 @@ CODE_SAMPLE
     {
         try {
             $nodes = $this->simplePhpParser->parseFile($pestFile);
-            $nodes = (new NodeTraverser(new NameResolver()))->traverse($nodes);
+            $nodes = new NodeTraverser(new NameResolver())->traverse($nodes);
         } catch (Throwable) {
             return [];
         }

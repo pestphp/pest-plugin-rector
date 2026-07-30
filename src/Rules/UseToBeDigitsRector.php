@@ -16,9 +16,9 @@ final class UseToBeDigitsRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'ctype_digit';
+    private const string FUNCTION_NAME = 'ctype_digit';
 
-    private const MATCHER_NAME = 'toBeDigits';
+    private const string MATCHER_NAME = 'toBeDigits';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

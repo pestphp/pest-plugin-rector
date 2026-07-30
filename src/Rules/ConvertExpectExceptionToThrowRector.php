@@ -23,7 +23,7 @@ final class ConvertExpectExceptionToThrowRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const SUPPORTED_METHODS = [
+    private const array SUPPORTED_METHODS = [
         'expectException',
         'expectExceptionMessage',
         'expectExceptionObject',
@@ -32,7 +32,7 @@ final class ConvertExpectExceptionToThrowRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const ALL_EXPECT_EXCEPTION_METHODS = [
+    private const array ALL_EXPECT_EXCEPTION_METHODS = [
         'expectException',
         'expectExceptionMessage',
         'expectExceptionObject',

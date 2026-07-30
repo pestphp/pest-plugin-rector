@@ -6,7 +6,7 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticConfidence
 {
-    public const HIGH = 'high';
+    public const string HIGH = 'high';
 
-    public const MEDIUM = 'medium';
+    public const string MEDIUM = 'medium';
 }

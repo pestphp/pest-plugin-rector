@@ -187,7 +187,7 @@ final class ExampleAttribute {}
  */
 function findFirstNode(string $code, callable $filter): Node
 {
-    $parser = (new ParserFactory())->createForNewestSupportedVersion();
+    $parser = new ParserFactory()->createForNewestSupportedVersion();
     $nodeFinder = new NodeFinder();
     $nodes = $parser->parse("<?php\n\n".$code);
 

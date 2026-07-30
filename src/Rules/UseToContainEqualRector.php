@@ -16,9 +16,9 @@ final class UseToContainEqualRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'in_array';
+    private const string FUNCTION_NAME = 'in_array';
 
-    private const MATCHER_NAME = 'toContainEqual';
+    private const string MATCHER_NAME = 'toContainEqual';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

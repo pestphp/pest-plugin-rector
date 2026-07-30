@@ -20,7 +20,7 @@ final class SimplifyExpectNotRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const FLIPPABLE_MATCHERS = [
+    private const array FLIPPABLE_MATCHERS = [
         'toBeTrue' => 'toBeFalse',
         'toBeFalse' => 'toBeTrue',
     ];
@@ -28,7 +28,7 @@ final class SimplifyExpectNotRector extends AbstractRector
     /**
      * @var array<int, string>
      */
-    private const NEGATABLE_MATCHERS = [
+    private const array NEGATABLE_MATCHERS = [
         'toBeEmpty',
     ];
 

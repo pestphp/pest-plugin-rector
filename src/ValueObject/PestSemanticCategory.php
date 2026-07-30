@@ -6,11 +6,11 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticCategory
 {
-    public const TEST_DEFINITION = 'test-definition';
+    public const string TEST_DEFINITION = 'test-definition';
 
-    public const EXPECTATION = 'expectation';
+    public const string EXPECTATION = 'expectation';
 
-    public const LIFECYCLE = 'lifecycle';
+    public const string LIFECYCLE = 'lifecycle';
 
-    public const EXECUTION = 'execution';
+    public const string EXECUTION = 'execution';
 }

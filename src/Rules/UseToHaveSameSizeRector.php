@@ -19,7 +19,7 @@ final class UseToHaveSameSizeRector extends AbstractRector
     /**
      * @var array<string>
      */
-    private const COUNT_FUNCTIONS = ['count', 'sizeof'];
+    private const array COUNT_FUNCTIONS = ['count', 'sizeof'];
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

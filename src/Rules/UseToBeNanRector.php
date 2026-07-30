@@ -16,9 +16,9 @@ final class UseToBeNanRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'is_nan';
+    private const string FUNCTION_NAME = 'is_nan';
 
-    private const MATCHER_NAME = 'toBeNan';
+    private const string MATCHER_NAME = 'toBeNan';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

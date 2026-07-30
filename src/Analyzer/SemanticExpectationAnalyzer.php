@@ -21,7 +21,7 @@ use PhpParser\Node\Scalar\String_;
 final class SemanticExpectationAnalyzer
 {
     /** @var array<string, string> */
-    private const TYPE_MATCHER_CATEGORIES = [
+    private const array TYPE_MATCHER_CATEGORIES = [
         'toBeArray' => 'array',
         'toBeBool' => 'bool',
         'toBeCallable' => 'callable',

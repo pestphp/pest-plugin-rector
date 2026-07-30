@@ -16,9 +16,9 @@ final class UseToBeListRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'array_is_list';
+    private const string FUNCTION_NAME = 'array_is_list';
 
-    private const MATCHER_NAME = 'toBeList';
+    private const string MATCHER_NAME = 'toBeList';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

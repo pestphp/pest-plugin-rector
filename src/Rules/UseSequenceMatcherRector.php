@@ -25,7 +25,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UseSequenceMatcherRector extends AbstractRector
 {
-    private const SEQUENCE_PARAM_NAME = 'e';
+    private const string SEQUENCE_PARAM_NAME = 'e';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

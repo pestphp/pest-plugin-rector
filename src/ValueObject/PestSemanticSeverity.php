@@ -6,9 +6,9 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticSeverity
 {
-    public const INFO = 'info';
+    public const string INFO = 'info';
 
-    public const WARNING = 'warning';
+    public const string WARNING = 'warning';
 
-    public const ERROR = 'error';
+    public const string ERROR = 'error';
 }

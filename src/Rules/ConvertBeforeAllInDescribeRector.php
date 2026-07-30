@@ -21,7 +21,7 @@ final class ConvertBeforeAllInDescribeRector extends AbstractSemanticPestRector
     /**
      * @var array<string, string>
      */
-    private const HOOK_REPLACEMENTS = [
+    private const array HOOK_REPLACEMENTS = [
         'beforeAll' => 'beforeEach',
         'afterAll' => 'afterEach',
     ];

@@ -18,7 +18,7 @@ final class RemoveOnlyRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const PEST_TEST_FUNCTIONS = [
+    private const array PEST_TEST_FUNCTIONS = [
         'test',
         'it',
         'describe',

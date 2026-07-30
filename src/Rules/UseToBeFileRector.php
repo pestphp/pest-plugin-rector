@@ -16,9 +16,9 @@ final class UseToBeFileRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'is_file';
+    private const string FUNCTION_NAME = 'is_file';
 
-    private const MATCHER_NAME = 'toBeFile';
+    private const string MATCHER_NAME = 'toBeFile';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

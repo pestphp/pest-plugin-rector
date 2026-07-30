@@ -21,7 +21,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveRedundantLiteralTypeExpectationRector extends AbstractSemanticPestRector
 {
     /** @var list<string> */
-    private const SUBJECT_TRANSFORMING_METHODS = ['and', 'json', 'each', 'match', 'sequence', 'unless', 'when'];
+    private const array SUBJECT_TRANSFORMING_METHODS = ['and', 'json', 'each', 'match', 'sequence', 'unless', 'when'];
 
     /** @var array<string, string> */
     private array $fileContentsByPath = [];

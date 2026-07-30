@@ -19,7 +19,7 @@ final class SimplifyFilesystemMatchersRector extends AbstractRector
     /**
      * @var array<string, array<string, string>>
      */
-    private const COMBINED_FUNCTION_MATCHERS = [
+    private const array COMBINED_FUNCTION_MATCHERS = [
         'is_dir' => [
             'is_readable' => 'toBeReadableDirectory',
             'is_writable' => 'toBeWritableDirectory',
@@ -35,7 +35,7 @@ final class SimplifyFilesystemMatchersRector extends AbstractRector
     /**
      * @var array<string, array<string, string>>
      */
-    private const COMBINED_CHAIN_MATCHERS = [
+    private const array COMBINED_CHAIN_MATCHERS = [
         'toBeDirectory' => [
             'toBeReadable' => 'toBeReadableDirectory',
             'toBeWritable' => 'toBeWritableDirectory',

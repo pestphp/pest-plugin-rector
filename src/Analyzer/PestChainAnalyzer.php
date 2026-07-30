@@ -15,7 +15,7 @@ use PhpParser\Node\Name;
 final class PestChainAnalyzer
 {
     /** @var list<string> */
-    private const PEST_TEST_FUNCTIONS = ['it', 'test', 'todo'];
+    private const array PEST_TEST_FUNCTIONS = ['it', 'test', 'todo'];
 
     public static function hasMethodNamedBetween(MethodCall $outerMethodCall, MethodCall $innerMethodCall, string $methodName): bool
     {

@@ -6,9 +6,9 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticFixCategory
 {
-    public const CLEANUP = 'cleanup';
+    public const string CLEANUP = 'cleanup';
 
-    public const NORMALIZATION = 'normalization';
+    public const string NORMALIZATION = 'normalization';
 
-    public const ASSISTANCE = 'assistance';
+    public const string ASSISTANCE = 'assistance';
 }

@@ -16,7 +16,7 @@ use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 final class RemoveStaticTestClosureRector extends AbstractSemanticPestRector
 {
     /** @var list<string> */
-    private const STATIC_HOOKS_TO_KEEP = ['beforeAll', 'afterAll'];
+    private const array STATIC_HOOKS_TO_KEEP = ['beforeAll', 'afterAll'];
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

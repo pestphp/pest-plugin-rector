@@ -16,9 +16,9 @@ final class UseToHavePropertyRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'property_exists';
+    private const string FUNCTION_NAME = 'property_exists';
 
-    private const MATCHER_NAME = 'toHaveProperty';
+    private const string MATCHER_NAME = 'toHaveProperty';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

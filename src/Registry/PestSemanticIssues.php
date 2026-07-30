@@ -15,19 +15,19 @@ use Pest\Rector\ValueObject\PestSemanticSeverity;
 
 final class PestSemanticIssues
 {
-    public const STATIC_TEST_CLOSURE = 'pest.test.staticClosure';
+    public const string STATIC_TEST_CLOSURE = 'pest.test.staticClosure';
 
-    public const INVALID_REPEAT_VALUE = 'pest.execution.invalidRepeatValue';
+    public const string INVALID_REPEAT_VALUE = 'pest.execution.invalidRepeatValue';
 
-    public const BEFORE_ALL_IN_DESCRIBE = 'pest.lifecycle.beforeAllInDescribe';
+    public const string BEFORE_ALL_IN_DESCRIBE = 'pest.lifecycle.beforeAllInDescribe';
 
-    public const AFTER_ALL_IN_DESCRIBE = 'pest.lifecycle.afterAllInDescribe';
+    public const string AFTER_ALL_IN_DESCRIBE = 'pest.lifecycle.afterAllInDescribe';
 
-    public const EMPTY_TEST_CLOSURE = 'pest.test.emptyClosure';
+    public const string EMPTY_TEST_CLOSURE = 'pest.test.emptyClosure';
 
-    public const REDUNDANT_EXPECTATION = 'pest.expectation.redundant';
+    public const string REDUNDANT_EXPECTATION = 'pest.expectation.redundant';
 
-    public const IMPOSSIBLE_EXPECTATION = 'pest.expectation.impossible';
+    public const string IMPOSSIBLE_EXPECTATION = 'pest.expectation.impossible';
 
     /** @var array<string, PestSemanticIssue>|null */
     private static ?array $issues = null;

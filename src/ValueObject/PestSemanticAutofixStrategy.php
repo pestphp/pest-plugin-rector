@@ -6,13 +6,13 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticAutofixStrategy
 {
-    public const NONE = 'none';
+    public const string NONE = 'none';
 
-    public const DIRECT_REWRITE = 'direct-rewrite';
+    public const string DIRECT_REWRITE = 'direct-rewrite';
 
-    public const LITERAL_NORMALIZATION = 'literal-normalization';
+    public const string LITERAL_NORMALIZATION = 'literal-normalization';
 
-    public const CHAIN_CLEANUP = 'chain-cleanup';
+    public const string CHAIN_CLEANUP = 'chain-cleanup';
 
-    public const REVIEW_HINT = 'review-hint';
+    public const string REVIEW_HINT = 'review-hint';
 }

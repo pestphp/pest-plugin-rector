@@ -6,9 +6,9 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticFixability
 {
-    public const AUTO_FIXABLE = 'auto-fixable';
+    public const string AUTO_FIXABLE = 'auto-fixable';
 
-    public const ASSISTED = 'assisted';
+    public const string ASSISTED = 'assisted';
 
-    public const INFORMATIONAL = 'informational';
+    public const string INFORMATIONAL = 'informational';
 }

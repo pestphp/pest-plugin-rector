@@ -18,7 +18,7 @@ final class UseTypeMatchersRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const TYPE_FUNCTION_TO_MATCHER = [
+    private const array TYPE_FUNCTION_TO_MATCHER = [
         'is_array' => 'toBeArray',
         'is_string' => 'toBeString',
         'is_int' => 'toBeInt',

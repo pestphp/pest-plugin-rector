@@ -22,7 +22,7 @@ final class ConvertAssertToExpectRector extends AbstractRector
     /**
      * @var array<string, array{matcher: string, negated: bool}>
      */
-    private const SINGLE_ARG_ASSERTIONS = [
+    private const array SINGLE_ARG_ASSERTIONS = [
         'assertTrue' => ['matcher' => 'toBeTrue', 'negated' => false],
         'assertFalse' => ['matcher' => 'toBeFalse', 'negated' => false],
         'assertNull' => ['matcher' => 'toBeNull', 'negated' => false],
@@ -68,7 +68,7 @@ final class ConvertAssertToExpectRector extends AbstractRector
     /**
      * @var array<string, array{matcher: string, negated: bool}>
      */
-    private const TWO_ARG_ASSERTIONS = [
+    private const array TWO_ARG_ASSERTIONS = [
         'assertEquals' => ['matcher' => 'toEqual', 'negated' => false],
         'assertEqualsCanonicalizing' => ['matcher' => 'toEqualCanonicalizing', 'negated' => false],
         'assertNotEquals' => ['matcher' => 'toEqual', 'negated' => true],
@@ -101,7 +101,7 @@ final class ConvertAssertToExpectRector extends AbstractRector
     /**
      * @var array<string, array{matcher: string, negated: bool}>
      */
-    private const THREE_ARG_ASSERTIONS = [
+    private const array THREE_ARG_ASSERTIONS = [
         'assertEqualsWithDelta' => ['matcher' => 'toEqualWithDelta', 'negated' => false],
     ];
 

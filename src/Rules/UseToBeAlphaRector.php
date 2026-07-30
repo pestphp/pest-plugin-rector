@@ -16,9 +16,9 @@ final class UseToBeAlphaRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'ctype_alpha';
+    private const string FUNCTION_NAME = 'ctype_alpha';
 
-    private const MATCHER_NAME = 'toBeAlpha';
+    private const string MATCHER_NAME = 'toBeAlpha';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

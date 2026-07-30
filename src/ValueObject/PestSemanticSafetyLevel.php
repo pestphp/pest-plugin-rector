@@ -6,9 +6,9 @@ namespace Pest\Rector\ValueObject;
 
 final class PestSemanticSafetyLevel
 {
-    public const SAFE = 'safe';
+    public const string SAFE = 'safe';
 
-    public const CONSERVATIVE = 'conservative';
+    public const string CONSERVATIVE = 'conservative';
 
-    public const REVIEW_REQUIRED = 'review-required';
+    public const string REVIEW_REQUIRED = 'review-required';
 }

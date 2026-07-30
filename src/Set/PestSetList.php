@@ -6,5 +6,5 @@ namespace Pest\Rector\Set;
 
 final class PestSetList
 {
-    public const CODING_STYLE = __DIR__.'/../../config/sets/coding-style.php';
+    public const string CODING_STYLE = __DIR__.'/../../config/sets/coding-style.php';
 }

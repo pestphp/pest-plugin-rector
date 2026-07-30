@@ -6,7 +6,7 @@ namespace Pest\Rector\ValueObject;
 
 final readonly class PestSemanticIssue
 {
-    public const INTEROPERABILITY_VERSION = '1.0.0';
+    public const string INTEROPERABILITY_VERSION = '1.0.0';
 
     /**
      * @param  non-empty-list<string>  $diagnosticIdentifiers

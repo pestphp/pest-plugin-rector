@@ -16,9 +16,9 @@ final class UseToBeDirectoryRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'is_dir';
+    private const string FUNCTION_NAME = 'is_dir';
 
-    private const MATCHER_NAME = 'toBeDirectory';
+    private const string MATCHER_NAME = 'toBeDirectory';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

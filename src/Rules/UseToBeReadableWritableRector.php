@@ -19,7 +19,7 @@ final class UseToBeReadableWritableRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const FUNCTION_MATCHERS = [
+    private const array FUNCTION_MATCHERS = [
         'is_readable' => 'toBeReadable',
         'is_writable' => 'toBeWritable',
         'is_writeable' => 'toBeWritable',

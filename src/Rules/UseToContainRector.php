@@ -16,9 +16,9 @@ final class UseToContainRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'in_array';
+    private const string FUNCTION_NAME = 'in_array';
 
-    private const MATCHER_NAME = 'toContain';
+    private const string MATCHER_NAME = 'toContain';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

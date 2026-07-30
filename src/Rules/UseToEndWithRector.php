@@ -16,9 +16,9 @@ final class UseToEndWithRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'str_ends_with';
+    private const string FUNCTION_NAME = 'str_ends_with';
 
-    private const MATCHER_NAME = 'toEndWith';
+    private const string MATCHER_NAME = 'toEndWith';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

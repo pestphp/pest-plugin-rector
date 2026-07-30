@@ -18,7 +18,7 @@ final class ToBeTrueNotFalseRector extends AbstractRector
     /**
      * @var array<string, string>
      */
-    private const OPPOSITE_MATCHERS = [
+    private const array OPPOSITE_MATCHERS = [
         'toBeFalse' => 'toBeTrue',
         'toBeTrue' => 'toBeFalse',
     ];

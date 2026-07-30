@@ -16,9 +16,9 @@ final class UseToBeInfiniteRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'is_infinite';
+    private const string FUNCTION_NAME = 'is_infinite';
 
-    private const MATCHER_NAME = 'toBeInfinite';
+    private const string MATCHER_NAME = 'toBeInfinite';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

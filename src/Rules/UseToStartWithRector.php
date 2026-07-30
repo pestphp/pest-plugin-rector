@@ -16,9 +16,9 @@ final class UseToStartWithRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'str_starts_with';
+    private const string FUNCTION_NAME = 'str_starts_with';
 
-    private const MATCHER_NAME = 'toStartWith';
+    private const string MATCHER_NAME = 'toStartWith';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

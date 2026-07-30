@@ -16,7 +16,7 @@ use PhpParser\Node\Scalar\String_;
 final class PestFunctionDetector
 {
     /** @var list<string> */
-    private const ALL_FUNCTIONS = [
+    private const array ALL_FUNCTIONS = [
         'it',
         'test',
         'todo',
@@ -28,7 +28,7 @@ final class PestFunctionDetector
     ];
 
     /** @var array<string, int> */
-    private const CLOSURE_FUNCTIONS = [
+    private const array CLOSURE_FUNCTIONS = [
         'it' => 1,
         'test' => 1,
         'describe' => 1,
@@ -39,7 +39,7 @@ final class PestFunctionDetector
     ];
 
     /** @var list<string> */
-    private const TEST_FUNCTIONS = ['it', 'test'];
+    private const array TEST_FUNCTIONS = ['it', 'test'];
 
     public static function getFunctionName(FuncCall $node): ?string
     {

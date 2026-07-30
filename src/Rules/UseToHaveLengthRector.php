@@ -19,7 +19,7 @@ final class UseToHaveLengthRector extends AbstractRector
     /**
      * @var array<string>
      */
-    private const LENGTH_FUNCTIONS = ['strlen', 'mb_strlen'];
+    private const array LENGTH_FUNCTIONS = ['strlen', 'mb_strlen'];
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

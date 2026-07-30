@@ -16,9 +16,9 @@ final class UseToHaveKeyRector extends AbstractRector
 {
     use ExpectChainValidation;
 
-    private const FUNCTION_NAME = 'array_key_exists';
+    private const string FUNCTION_NAME = 'array_key_exists';
 
-    private const MATCHER_NAME = 'toHaveKey';
+    private const string MATCHER_NAME = 'toHaveKey';
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

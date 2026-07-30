@@ -16,7 +16,7 @@ final class RemoveDebugExpectationsRector extends AbstractRector
     /**
      * @var string[]
      */
-    private const DEBUG_METHODS = ['dump', 'dd', 'ray'];
+    private const array DEBUG_METHODS = ['dump', 'dd', 'ray'];
 
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition

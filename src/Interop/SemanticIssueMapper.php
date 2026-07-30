@@ -18,7 +18,7 @@ final readonly class SemanticIssueMapper
     /**
      * @var array<string, list<class-string<AbstractSemanticPestRector>>>
      */
-    private const RULE_MAP = [
+    private const array RULE_MAP = [
         PestSemanticIssues::STATIC_TEST_CLOSURE => [RemoveStaticTestClosureRector::class],
         PestSemanticIssues::BEFORE_ALL_IN_DESCRIBE => [ConvertBeforeAllInDescribeRector::class],
         PestSemanticIssues::AFTER_ALL_IN_DESCRIBE => [ConvertBeforeAllInDescribeRector::class],
