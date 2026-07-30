@@ -12,20 +12,33 @@ use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Stmt\Expression;
+use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
+use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
 use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
-final class ChainExpectCallsRector extends AbstractRector
+final class ChainExpectCallsRector extends AbstractRector implements ConfigurableRectorInterface
 {
+    public const string MERGE_DIFFERENT_VARIABLES = 'merge_different_variables';
+
+    private bool $mergeDifferentVariables = true;
+
+    /**
+     * @param  array<string, mixed>  $configuration
+     */
+    public function configure(array $configuration): void
+    {
+        $this->mergeDifferentVariables = (bool) ($configuration[self::MERGE_DIFFERENT_VARIABLES] ?? true);
+    }
+
     // @codeCoverageIgnoreStart
     public function getRuleDefinition(): RuleDefinition
     {
         return new RuleDefinition(
-            'Chains multiple expect() calls on the same value into a single chained expectation',
+            'Chains consecutive expect() calls into a single chained expectation, combining calls on the same value and joining different values with ->and() (configurable)',
             [
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 expect($a)->toBe(10);
 expect($a)->toBeInt();
@@ -35,8 +48,10 @@ CODE_SAMPLE
 expect($a)->toBe(10)
     ->toBeInt();
 CODE_SAMPLE
+                    ,
+                    [self::MERGE_DIFFERENT_VARIABLES => true]
                 ),
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 expect($a)->toBe(10);
 expect($b)->toBe(10);
@@ -46,8 +61,10 @@ CODE_SAMPLE
 expect($a)->toBe(10)
     ->and($b)->toBe(10);
 CODE_SAMPLE
+                    ,
+                    [self::MERGE_DIFFERENT_VARIABLES => true]
                 ),
-                new CodeSample(
+                new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
 expect($a)->toBe(10);
 expect($a)->toBeInt();
@@ -61,6 +78,23 @@ expect($a)->toBe(10)
     ->and($b)->toBe(10)
     ->toBeInt();
 CODE_SAMPLE
+                    ,
+                    [self::MERGE_DIFFERENT_VARIABLES => true]
+                ),
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
+expect($a)->toBe(10);
+expect($a)->toBeInt();
+expect($b)->toBe(10);
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+expect($a)->toBe(10)
+    ->toBeInt();
+expect($b)->toBe(10);
+CODE_SAMPLE
+                    ,
+                    [self::MERGE_DIFFERENT_VARIABLES => false]
                 ),
             ]
         );
@@ -156,6 +190,10 @@ CODE_SAMPLE
                         }
                     }
 
+                    if ($hasAnd && ! $this->mergeDifferentVariables) {
+                        continue;
+                    }
+
                     if ($hasAnd && $this->mergeDifferentVariableChains($stmts, $key)) {
                         $hasChanged = true;
                         $changedInPass = true;
@@ -170,7 +208,7 @@ CODE_SAMPLE
                     break;
                 }
 
-                if ($this->mergeDifferentVariableChains($stmts, $key)) {
+                if ($this->mergeDifferentVariables && $this->mergeDifferentVariableChains($stmts, $key)) {
                     $hasChanged = true;
                     $changedInPass = true;
 

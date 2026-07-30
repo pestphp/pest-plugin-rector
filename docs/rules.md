@@ -2,7 +2,9 @@
 
 ## ChainExpectCallsRector
 
-Chains multiple `expect()` calls on the same value into a single chained expectation
+Chains consecutive `expect()` calls into a single chained expectation, combining calls on the same value and joining different values with `->and()` (configurable)
+
+:wrench: **configure it!**
 
 - class: [`Pest\Rector\Rules\ChainExpectCallsRector`](../src/Rules/ChainExpectCallsRector.php)
 
@@ -33,6 +35,16 @@ Chains multiple `expect()` calls on the same value into a single chained expecta
 +    ->toBeInt()
 +    ->and($b)->toBe(10)
 +    ->toBeInt();
+```
+
+<br>
+
+```diff
+-expect($a)->toBe(10);
+-expect($a)->toBeInt();
++expect($a)->toBe(10)
++    ->toBeInt();
+ expect($b)->toBe(10);
 ```
 
 <br>
