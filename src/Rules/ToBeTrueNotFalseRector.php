@@ -81,7 +81,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($expectArgument)->isBoolean()->no()) {
+        if (! $this->getType($expectArgument)->isBoolean()->yes()) {
             return null;
         }
 

@@ -35,6 +35,9 @@
         "phpstan/phpstan": "^2.2.5",
         "symplify/rule-doc-generator": "^12.2.5"
     },
+    "conflict": {
+        "pestphp/pest": "<5.0.0"
+    },
     "autoload": {
         "psr-4": {
             "Pest\\Rector\\": "src/"
