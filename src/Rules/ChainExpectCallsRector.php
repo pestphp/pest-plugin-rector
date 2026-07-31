@@ -42,23 +42,12 @@ final class ChainExpectCallsRector extends AbstractRector implements Configurabl
                     <<<'CODE_SAMPLE'
 expect($a)->toBe(10);
 expect($a)->toBeInt();
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-expect($a)->toBe(10)
-    ->toBeInt();
-CODE_SAMPLE
-                    ,
-                    [self::MERGE_DIFFERENT_VARIABLES => true]
-                ),
-                new ConfiguredCodeSample(
-                    <<<'CODE_SAMPLE'
-expect($a)->toBe(10);
 expect($b)->toBe(10);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
 expect($a)->toBe(10)
+    ->toBeInt()
     ->and($b)->toBe(10);
 CODE_SAMPLE
                     ,
@@ -66,29 +55,14 @@ CODE_SAMPLE
                 ),
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
-expect($a)->toBe(10);
-expect($a)->toBeInt();
-expect($b)->toBe(10);
-expect($b)->toBeInt();
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-expect($a)->toBe(10)
-    ->toBeInt()
-    ->and($b)->toBe(10)
-    ->toBeInt();
-CODE_SAMPLE
-                    ,
-                    [self::MERGE_DIFFERENT_VARIABLES => true]
-                ),
-                new ConfiguredCodeSample(
-                    <<<'CODE_SAMPLE'
+// with merge_different_variables => false
 expect($a)->toBe(10);
 expect($a)->toBeInt();
 expect($b)->toBe(10);
 CODE_SAMPLE
                     ,
                     <<<'CODE_SAMPLE'
+// with merge_different_variables => false
 expect($a)->toBe(10)
     ->toBeInt();
 expect($b)->toBe(10);
