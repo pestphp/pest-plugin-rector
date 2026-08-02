@@ -7,10 +7,19 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -174,6 +183,10 @@ CODE_SAMPLE
                         break;
                     }
 
+                    if (! $this->isSideEffectFree($firstExpectArg)) {
+                        continue;
+                    }
+
                     $this->mergeSameVariable($stmts, $key);
 
                     $hasChanged = true;
@@ -198,6 +211,33 @@ CODE_SAMPLE
         $this->setStatements($node, $stmts);
 
         return $node;
+    }
+
+    private function isSideEffectFree(Expr $expr): bool
+    {
+        if ($expr instanceof Variable
+            || $expr instanceof Scalar
+            || $expr instanceof ConstFetch
+            || $expr instanceof ClassConstFetch
+            || $expr instanceof StaticPropertyFetch
+        ) {
+            return true;
+        }
+
+        if ($expr instanceof PropertyFetch || $expr instanceof NullsafePropertyFetch) {
+            return $this->isSideEffectFree($expr->var);
+        }
+
+        if ($expr instanceof ArrayDimFetch) {
+            return $this->isSideEffectFree($expr->var)
+                && (! $expr->dim instanceof Expr || $this->isSideEffectFree($expr->dim));
+        }
+
+        if ($expr instanceof Array_) {
+            return array_all($expr->items, fn (ArrayItem $item): bool => $this->isSideEffectFree($item->value));
+        }
+
+        return false;
     }
 
     private function buildChainedCall(MethodCall $first, MethodCall $second): MethodCall
