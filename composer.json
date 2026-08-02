@@ -24,15 +24,15 @@
     ],
     "require": {
         "php": "^8.4",
-        "rector/rector": "^2.5.7",
+        "rector/rector": "^2.5.9",
         "symplify/rule-doc-generator-contracts": "^11.2"
     },
     "require-dev": {
-        "laravel/pao": "^1.1.2",
-        "laravel/pint": "^1.29.3",
-        "pestphp/pest": "^5.0.0",
+        "laravel/pao": "^1.1.3",
+        "laravel/pint": "^1.30.3",
+        "pestphp/pest": "^5.0.2",
         "pestphp/pest-plugin-phpstan": "^5.0",
-        "phpstan/phpstan": "^2.2.5",
+        "phpstan/phpstan": "^2.2.7",
         "symplify/rule-doc-generator": "^12.2.5"
     },
     "conflict": {
