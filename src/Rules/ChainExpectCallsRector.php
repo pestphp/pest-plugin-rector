@@ -7,10 +7,21 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractRector;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ClassConstFetch;
+use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Expr\StaticPropertyFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\InterpolatedStringPart;
+use PhpParser\Node\Scalar;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -174,6 +185,17 @@ CODE_SAMPLE
                         break;
                     }
 
+                    if (! $this->isSideEffectFree($firstExpectArg)) {
+                        if ($this->mergeDifferentVariables && $this->mergeDifferentVariableChains($stmts, $key)) {
+                            $hasChanged = true;
+                            $changedInPass = true;
+
+                            break;
+                        }
+
+                        continue;
+                    }
+
                     $this->mergeSameVariable($stmts, $key);
 
                     $hasChanged = true;
@@ -198,6 +220,40 @@ CODE_SAMPLE
         $this->setStatements($node, $stmts);
 
         return $node;
+    }
+
+    private function isSideEffectFree(Expr $expr): bool
+    {
+        if ($expr instanceof InterpolatedString) {
+            return array_all(
+                $expr->parts,
+                fn (Expr|InterpolatedStringPart $part): bool => ! $part instanceof Expr || $this->isSideEffectFree($part),
+            );
+        }
+
+        if ($expr instanceof Variable
+            || $expr instanceof Scalar
+            || $expr instanceof ConstFetch
+            || $expr instanceof ClassConstFetch
+            || $expr instanceof StaticPropertyFetch
+        ) {
+            return true;
+        }
+
+        if ($expr instanceof PropertyFetch || $expr instanceof NullsafePropertyFetch) {
+            return $this->isSideEffectFree($expr->var);
+        }
+
+        if ($expr instanceof ArrayDimFetch) {
+            return $this->isSideEffectFree($expr->var)
+                && (! $expr->dim instanceof Expr || $this->isSideEffectFree($expr->dim));
+        }
+
+        if ($expr instanceof Array_) {
+            return array_all($expr->items, fn (ArrayItem $item): bool => $this->isSideEffectFree($item->value));
+        }
+
+        return false;
     }
 
     private function buildChainedCall(MethodCall $first, MethodCall $second): MethodCall
@@ -280,8 +336,13 @@ CODE_SAMPLE
         $collectIndex = $key + 1;
         $allSecondMethods = [];
         $collectedComments = (array) $exprStmt->getAttribute('comments', []);
+        $targetIsSideEffectFree = $this->isSideEffectFree($targetExpectArg);
 
         while (isset($stmts[$collectIndex])) {
+            if ($collectIndex > $key + 1 && ! $targetIsSideEffectFree) {
+                break;
+            }
+
             $currStmt = $stmts[$collectIndex];
 
             if (! $currStmt instanceof Expression) {

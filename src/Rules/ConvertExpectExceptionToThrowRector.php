@@ -9,6 +9,9 @@ use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ArrowFunction;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\AssignOp;
+use PhpParser\Node\Expr\AssignRef;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\Variable;
@@ -182,6 +185,10 @@ CODE_SAMPLE
 
         $action = $stmts[$actionPos]->expr;
         if ($action instanceof MethodCall && $this->getExpectationMethodName($action, true) !== null) {
+            return null;
+        }
+
+        if ($action instanceof Assign || $action instanceof AssignRef || $action instanceof AssignOp) {
             return null;
         }
 
