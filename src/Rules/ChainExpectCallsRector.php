@@ -11,6 +11,7 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
@@ -83,6 +84,7 @@ CODE_SAMPLE
                 ),
                 new ConfiguredCodeSample(
                     <<<'CODE_SAMPLE'
+// rector.php: [ChainExpectCallsRector::MERGE_DIFFERENT_VARIABLES => false]
 expect($a)->toBe(10);
 expect($a)->toBeInt();
 expect($b)->toBe(10);
@@ -92,6 +94,19 @@ CODE_SAMPLE
 expect($a)->toBe(10)
     ->toBeInt();
 expect($b)->toBe(10);
+CODE_SAMPLE
+                    ,
+                    [self::MERGE_DIFFERENT_VARIABLES => false]
+                ),
+                new ConfiguredCodeSample(
+                    <<<'CODE_SAMPLE'
+// rector.php: [ChainExpectCallsRector::MERGE_DIFFERENT_VARIABLES => false]
+expect($a)->toBe(10)->and($b)->toBe(20);
+CODE_SAMPLE
+                    ,
+                    <<<'CODE_SAMPLE'
+expect($a)->toBe(10);
+expect($b)->toBe(20);
 CODE_SAMPLE
                     ,
                     [self::MERGE_DIFFERENT_VARIABLES => false]
@@ -143,6 +158,13 @@ CODE_SAMPLE
                 $firstExpectArg = $this->getExpectArgument($methodCall);
                 if (! $firstExpectArg instanceof Expr) {
                     continue;
+                }
+
+                if (! $this->mergeDifferentVariables && $this->splitAndChain($stmts, $key)) {
+                    $hasChanged = true;
+                    $changedInPass = true;
+
+                    break;
                 }
 
                 if (! isset($stmts[$key + 1])) {
@@ -382,6 +404,72 @@ CODE_SAMPLE
         }
 
         $stmts = array_values($stmts);
+
+        return true;
+    }
+
+    /**
+     * @param  array<Node\Stmt>  $stmts
+     */
+    private function splitAndChain(array &$stmts, int $key): bool
+    {
+        /** @var Expression $exprStmt */
+        $exprStmt = $stmts[$key];
+        /** @var MethodCall $methodCall */
+        $methodCall = $exprStmt->expr;
+
+        $expectCall = $this->getExpectFuncCall($methodCall);
+        if (! $expectCall instanceof FuncCall) {
+            return false;
+        }
+
+        $segments = [];
+        $currentBase = $expectCall;
+        $currentMethods = [];
+
+        foreach ($this->collectChainMethods($methodCall) as $method) {
+            $nameValue = $method['name'];
+            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+
+            if ($name !== 'and' || ! empty($method['is_property'])) {
+                $currentMethods[] = $method;
+
+                continue;
+            }
+
+            if (! isset($method['args'][0]) || ! $method['args'][0] instanceof Arg) {
+                return false;
+            }
+
+            $segments[] = [$currentBase, $currentMethods];
+
+            $andValue = $method['args'][0]->value;
+            $andValue->setAttribute(AttributeKey::ORIGINAL_NODE, null);
+            $currentBase = new FuncCall(new Name('expect'), [new Arg($andValue)]);
+            $currentMethods = [];
+        }
+
+        if ($segments === []) {
+            return false;
+        }
+
+        $segments[] = [$currentBase, $currentMethods];
+
+        $newStmts = [];
+        foreach ($segments as $index => [$base, $segmentMethods]) {
+            $expr = $this->rebuildMethodChain($base, $segmentMethods);
+
+            if ($index === 0) {
+                $exprStmt->expr = $expr;
+                $newStmts[] = $exprStmt;
+            } else {
+                $newStmts[] = new Expression($expr);
+            }
+
+            $this->applyNewlineAttributes($expr);
+        }
+
+        array_splice($stmts, $key, 1, $newStmts);
 
         return true;
     }
