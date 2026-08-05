@@ -11,35 +11,16 @@ Chains consecutive `expect()` calls into a single chained expectation, combining
 ```diff
 -expect($a)->toBe(10);
 -expect($a)->toBeInt();
-+expect($a)->toBe(10)
-+    ->toBeInt();
-```
-
-<br>
-
-```diff
--expect($a)->toBe(10);
 -expect($b)->toBe(10);
 +expect($a)->toBe(10)
++    ->toBeInt()
 +    ->and($b)->toBe(10);
 ```
 
 <br>
 
 ```diff
--expect($a)->toBe(10);
--expect($a)->toBeInt();
--expect($b)->toBe(10);
--expect($b)->toBeInt();
-+expect($a)->toBe(10)
-+    ->toBeInt()
-+    ->and($b)->toBe(10)
-+    ->toBeInt();
-```
-
-<br>
-
-```diff
+ // with merge_different_variables => false
 -expect($a)->toBe(10);
 -expect($a)->toBeInt();
 +expect($a)->toBe(10)

@@ -137,8 +137,7 @@ CODE_SAMPLE
 
                         $firstIsSafe = true;
                         foreach ($firstPartition['non_type'] as $nm) {
-                            $nameValue = $nm['name'];
-                            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+                            $name = $this->resolveMethodName($nm);
                             if ($name !== null && ! $this->isSafeNonTypeMatcher($name)) {
                                 $firstIsSafe = false;
                                 break;
@@ -165,6 +164,57 @@ CODE_SAMPLE
     }
 
     /**
+     * @param  array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}  $method
+     */
+    private function resolveMethodName(array $method): ?string
+    {
+        $nameValue = $method['name'];
+
+        return $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+    }
+
+    /**
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
+     * @return array<array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>>
+     */
+    private function groupIntoUnits(array $methods): array
+    {
+        $units = [];
+        $pending = [];
+
+        foreach ($methods as $m) {
+            $pending[] = $m;
+
+            if (! in_array($this->resolveMethodName($m), self::$prefixModifiers, true)) {
+                $units[] = $pending;
+                $pending = [];
+            }
+        }
+
+        if ($pending !== []) {
+            $units[] = $pending;
+        }
+
+        return $units;
+    }
+
+    /**
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $unit
+     */
+    private function isTypeUnit(array $unit): bool
+    {
+        $last = end($unit);
+
+        if ($last === false) {
+            return false;
+        }
+
+        $name = $this->resolveMethodName($last);
+
+        return $name !== null && $this->isTypeMatcherName($name);
+    }
+
+    /**
      * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
      * @return array{type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>, non_type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>}
      */
@@ -174,8 +224,7 @@ CODE_SAMPLE
         $nonType = [];
 
         foreach ($methods as $m) {
-            $nameValue = $m['name'];
-            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+            $name = $this->resolveMethodName($m);
 
             if ($name !== null && $this->isTypeMatcherName($name)) {
                 $type[] = $m;
@@ -232,126 +281,91 @@ CODE_SAMPLE
         $segment = [];
 
         $flushSegment = function () use (&$segment, &$result): void {
-            foreach ($segment as $sm) {
-                $nameValue = $sm['name'];
-                $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-                if ($name === 'each') {
-                    foreach ($segment as $m) {
-                        $result[] = $m;
-                    }
+            $keepAsIs = function () use (&$segment, &$result): void {
+                foreach ($segment as $m) {
+                    $result[] = $m;
+                }
 
-                    $segment = [];
+                $segment = [];
+            };
+
+            foreach ($segment as $sm) {
+                $name = $this->resolveMethodName($sm);
+
+                if ($name === 'each') {
+                    $keepAsIs();
+
+                    return;
+                }
+
+                if ($name !== null && ! $this->isTypeMatcherName($name) && ! $this->isSafeNonTypeMatcher($name)) {
+                    $keepAsIs();
 
                     return;
                 }
             }
 
-            $partitioned = $this->partitionTypeAndNonType($segment);
+            $units = $this->groupIntoUnits($segment);
 
-            foreach ($partitioned['non_type'] as $nm) {
-                $nameValue = $nm['name'];
-                $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-                if ($name !== null && ! $this->isSafeNonTypeMatcher($name)) {
-                    foreach ($segment as $m) {
-                        $result[] = $m;
-                    }
+            $typeUnits = [];
+            $nonTypeUnits = [];
 
-                    $segment = [];
-
-                    return;
+            foreach ($units as $unit) {
+                if ($this->isTypeUnit($unit)) {
+                    $typeUnits[] = $unit;
+                } else {
+                    $nonTypeUnits[] = $unit;
                 }
+            }
+
+            if ($typeUnits === [] || $nonTypeUnits === []) {
+                $keepAsIs();
+
+                return;
             }
 
             $needsReorder = false;
-            $hasType = $partitioned['type'] !== [];
-            $hasNonType = $partitioned['non_type'] !== [];
+            $foundNonType = false;
 
-            if ($hasType && $hasNonType) {
-                $foundNonType = false;
-                foreach ($segment as $m) {
-                    $nameValue = $m['name'];
-                    $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+            foreach ($units as $unit) {
+                if ($this->isTypeUnit($unit)) {
+                    if ($foundNonType) {
+                        $needsReorder = true;
 
-                    if ($name !== null && $this->isTypeMatcherName($name)) {
-                        if ($foundNonType) {
-                            $needsReorder = true;
-                            break;
-                        }
-                    } else {
-                        $foundNonType = true;
+                        break;
                     }
-                }
-
-                if ($needsReorder) {
-                    $foundType = false;
-                    $foundNonAfterType = false;
-                    $foundTypeAfterNonAfterType = false;
-                    foreach ($segment as $m) {
-                        $nameValue = $m['name'];
-                        $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-
-                        if ($name !== null && $this->isTypeMatcherName($name)) {
-                            if ($foundNonAfterType) {
-                                $foundTypeAfterNonAfterType = true;
-                                break;
-                            }
-
-                            $foundType = true;
-                        } elseif ($foundType) {
-                            $foundNonAfterType = true;
-                        }
-                    }
-
-                    if ($foundTypeAfterNonAfterType) {
-                        $needsReorder = false;
-                    }
+                } else {
+                    $foundNonType = true;
                 }
             }
 
             if ($needsReorder) {
-                $prefixBeforeType = [];
-                $otherNonType = [];
-
                 $foundType = false;
-                foreach ($segment as $m) {
-                    $nameValue = $m['name'];
-                    $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+                $foundNonAfterType = false;
 
-                    if ($name !== null && $this->isTypeMatcherName($name)) {
-                        $foundType = true;
-                        break;
-                    }
+                foreach ($units as $unit) {
+                    if ($this->isTypeUnit($unit)) {
+                        if ($foundNonAfterType) {
+                            $needsReorder = false;
 
-                    if (in_array($name, self::$prefixModifiers, true)) {
-                        $prefixBeforeType[] = $m;
-                    }
-                }
-
-                $remainingPrefixes = $prefixBeforeType;
-                foreach ($partitioned['non_type'] as $m) {
-                    $nameValue = $m['name'];
-                    $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-                    $isPrefix = false;
-                    foreach ($remainingPrefixes as $idx => $p) {
-                        $pNameValue = $p['name'];
-                        $pName = $pNameValue instanceof Node ? $this->getName($pNameValue) : $pNameValue;
-                        if ($pName === $name) {
-                            $isPrefix = true;
-                            unset($remainingPrefixes[$idx]);
                             break;
                         }
-                    }
 
-                    if (! $isPrefix) {
-                        $otherNonType[] = $m;
+                        $foundType = true;
+                    } elseif ($foundType) {
+                        $foundNonAfterType = true;
                     }
                 }
+            }
 
-                foreach (array_merge($prefixBeforeType, $partitioned['type'], $otherNonType) as $m) {
-                    $result[] = $m;
-                }
-            } else {
-                foreach ($segment as $m) {
+            if (! $needsReorder) {
+                $keepAsIs();
+
+                return;
+            }
+
+            foreach (array_merge($typeUnits, $nonTypeUnits) as $unit) {
+                foreach ($unit as $m) {
                     $result[] = $m;
                 }
             }
@@ -360,10 +374,7 @@ CODE_SAMPLE
         };
 
         foreach ($methods as $m) {
-            $nameValue = $m['name'];
-            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-
-            if ($name === 'and') {
+            if ($this->resolveMethodName($m) === 'and') {
                 if ($segment !== []) {
                     $flushSegment();
                 }
