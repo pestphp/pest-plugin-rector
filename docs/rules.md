@@ -1,4 +1,4 @@
-# 60 Rules Overview
+# 61 Rules Overview
 
 ## ChainExpectCallsRector
 
@@ -26,6 +26,20 @@ Chains consecutive `expect()` calls into a single chained expectation, combining
 +expect($a)->toBe(10)
 +    ->toBeInt();
  expect($b)->toBe(10);
+```
+
+<br>
+
+## ConvertAndToExpectRector
+
+Splits `->and()` calls in `expect()` chains into separate `expect()` statements
+
+- class: [`Pest\Rector\Rules\ConvertAndToExpectRector`](../src/Rules/ConvertAndToExpectRector.php)
+
+```diff
+-expect($a)->toBe(10)->and($b)->toBe(20);
++expect($a)->toBe(10);
++expect($b)->toBe(20);
 ```
 
 <br>

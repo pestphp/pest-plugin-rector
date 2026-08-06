@@ -13,14 +13,12 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Expr\StaticPropertyFetch;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\InterpolatedStringPart;
-use PhpParser\Node\Name;
 use PhpParser\Node\Scalar;
 use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Stmt\Expression;
@@ -82,19 +80,6 @@ CODE_SAMPLE
                     ,
                     [self::MERGE_DIFFERENT_VARIABLES => false]
                 ),
-                new ConfiguredCodeSample(
-                    <<<'CODE_SAMPLE'
-// with merge_different_variables => false
-expect($a)->toBe(10)->and($b)->toBe(20);
-CODE_SAMPLE
-                    ,
-                    <<<'CODE_SAMPLE'
-expect($a)->toBe(10);
-expect($b)->toBe(20);
-CODE_SAMPLE
-                    ,
-                    [self::MERGE_DIFFERENT_VARIABLES => false]
-                ),
             ]
         );
     }
@@ -142,13 +127,6 @@ CODE_SAMPLE
                 $firstExpectArg = $this->getExpectArgument($methodCall);
                 if (! $firstExpectArg instanceof Expr) {
                     continue;
-                }
-
-                if (! $this->mergeDifferentVariables && $this->splitAndChain($stmts, $key)) {
-                    $hasChanged = true;
-                    $changedInPass = true;
-
-                    break;
                 }
 
                 if (! isset($stmts[$key + 1])) {
@@ -440,108 +418,5 @@ CODE_SAMPLE
         $stmts = array_values($stmts);
 
         return true;
-    }
-
-    /**
-     * @param  array<Node\Stmt>  $stmts
-     */
-    private function splitAndChain(array &$stmts, int $key): bool
-    {
-        /** @var Expression $exprStmt */
-        $exprStmt = $stmts[$key];
-        /** @var MethodCall $methodCall */
-        $methodCall = $exprStmt->expr;
-
-        $expectCall = $this->getExpectFuncCall($methodCall);
-        if (! $expectCall instanceof FuncCall) {
-            return false;
-        }
-
-        $segments = [];
-        $currentBase = $expectCall;
-        $currentMethods = [];
-
-        foreach ($this->collectChainMethods($methodCall) as $method) {
-            $nameValue = $method['name'];
-            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-
-            if ($name !== 'and' || ! empty($method['is_property'])) {
-                $currentMethods[] = $method;
-
-                continue;
-            }
-
-            if (! isset($method['args'][0]) || ! $method['args'][0] instanceof Arg) {
-                return false;
-            }
-
-            $segments[] = [$currentBase, $currentMethods];
-
-            $andValue = $method['args'][0]->value;
-            $andValue->setAttribute(AttributeKey::ORIGINAL_NODE, null);
-            $currentBase = new FuncCall(new Name('expect'), [new Arg($andValue)]);
-            $currentMethods = [];
-        }
-
-        if ($segments === []) {
-            return false;
-        }
-
-        $segments[] = [$currentBase, $currentMethods];
-
-        $newStmts = [];
-        foreach ($segments as $index => [$base, $segmentMethods]) {
-            $expr = $this->rebuildMethodChain($base, $segmentMethods);
-
-            if ($index === 0) {
-                $exprStmt->expr = $expr;
-                $newStmts[] = $exprStmt;
-            } else {
-                $newStmts[] = new Expression($expr);
-            }
-
-            $this->applyNewlineAttributes($expr);
-        }
-
-        array_splice($stmts, $key, 1, $newStmts);
-
-        return true;
-    }
-
-    private function applyNewlineAttributes(Expr $chain): void
-    {
-        if (! defined(AttributeKey::class.'::NEWLINE_ON_FLUENT_CALL')) {
-            return;
-        }
-
-        $current = $chain;
-
-        while ($current instanceof MethodCall) {
-            $var = $current->var;
-
-            if ($var instanceof FuncCall) {
-                break;
-            }
-
-            if ($var instanceof PropertyFetch) {
-                $current = $var->var;
-
-                continue;
-            }
-
-            if (! $var instanceof MethodCall) {
-                break;
-            }
-
-            if ($this->isName($var->name, 'and')) {
-                $var->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
-                $current = $var->var;
-
-                continue;
-            }
-
-            $current->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
-            $current = $var;
-        }
     }
 }
