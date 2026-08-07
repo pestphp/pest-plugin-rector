@@ -13,7 +13,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
-use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\NullsafePropertyFetch;
 use PhpParser\Node\Expr\PropertyFetch;
@@ -419,42 +418,5 @@ CODE_SAMPLE
         $stmts = array_values($stmts);
 
         return true;
-    }
-
-    private function applyNewlineAttributes(Expr $chain): void
-    {
-        if (! defined(AttributeKey::class.'::NEWLINE_ON_FLUENT_CALL')) {
-            return;
-        }
-
-        $current = $chain;
-
-        while ($current instanceof MethodCall) {
-            $var = $current->var;
-
-            if ($var instanceof FuncCall) {
-                break;
-            }
-
-            if ($var instanceof PropertyFetch) {
-                $current = $var->var;
-
-                continue;
-            }
-
-            if (! $var instanceof MethodCall) {
-                break;
-            }
-
-            if ($this->isName($var->name, 'and')) {
-                $var->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
-                $current = $var->var;
-
-                continue;
-            }
-
-            $current->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
-            $current = $var;
-        }
     }
 }

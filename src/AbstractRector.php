@@ -29,6 +29,7 @@ use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\While_;
 use PhpParser\Node\VariadicPlaceholder;
+use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector as BaseAbstractRector;
@@ -279,6 +280,43 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         }
 
         return $result;
+    }
+
+    protected function applyNewlineAttributes(Expr $chain): void
+    {
+        if (! defined(AttributeKey::class.'::NEWLINE_ON_FLUENT_CALL')) {
+            return;
+        }
+
+        $current = $chain;
+
+        while ($current instanceof MethodCall) {
+            $var = $current->var;
+
+            if ($var instanceof FuncCall) {
+                break;
+            }
+
+            if ($var instanceof PropertyFetch) {
+                $current = $var->var;
+
+                continue;
+            }
+
+            if (! $var instanceof MethodCall) {
+                break;
+            }
+
+            if ($this->isName($var->name, 'and')) {
+                $var->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
+                $current = $var->var;
+
+                continue;
+            }
+
+            $current->setAttribute(AttributeKey::NEWLINE_ON_FLUENT_CALL, true);
+            $current = $var;
+        }
     }
 
     /**
