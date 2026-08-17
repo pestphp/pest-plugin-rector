@@ -1,5 +1,11 @@
 <?php
 
+/**
+ * @var string $dir
+ * @var string $file
+ * @var string $locked
+ * @var string $path
+ */
 expect(is_readable($path))->toBeTrue();
 expect(is_writable($file))->toBeTrue();
 expect(is_writeable($dir))->toBeTrue();
@@ -9,6 +15,12 @@ expect(is_readable($locked))->toBeFalse();
 -----
 <?php
 
+/**
+ * @var string $dir
+ * @var string $file
+ * @var string $locked
+ * @var string $path
+ */
 expect($path)->toBeReadable();
 expect($file)->toBeWritable();
 expect($dir)->toBeWritable();

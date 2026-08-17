@@ -69,7 +69,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($pathArg->value)->isFloat()->no() && $this->getType($pathArg->value)->isInteger()->no()) {
+        if (! $this->getType($pathArg->value)->isFloat()->yes() && ! $this->getType($pathArg->value)->isInteger()->yes()) {
             return null;
         }
 

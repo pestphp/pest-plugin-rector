@@ -107,7 +107,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($stringArg->value)->isString()->no()) {
+        if (! $this->getType($stringArg->value)->isString()->yes()) {
             return null;
         }
 

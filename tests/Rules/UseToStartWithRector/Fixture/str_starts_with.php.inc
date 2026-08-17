@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @var string $string
+ * @var string $text
+ * @var string $url
+ */
 expect(str_starts_with($string, 'Hello'))->toBeTrue();
 expect(str_starts_with($text, $prefix))->toBeTrue();
 expect(str_starts_with($url, 'https://'))->toBeFalse();
@@ -8,6 +13,11 @@ expect(str_starts_with($url, 'https://'))->toBeFalse();
 -----
 <?php
 
+/**
+ * @var string $string
+ * @var string $text
+ * @var string $url
+ */
 expect($string)->toStartWith('Hello');
 expect($text)->toStartWith($prefix);
 expect($url)->not->toStartWith('https://');

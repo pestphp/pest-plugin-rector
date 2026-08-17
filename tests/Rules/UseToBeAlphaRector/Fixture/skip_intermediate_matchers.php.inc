@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @var string $value
+ */
 // Rebuilding the chain from the expect() holder would discard every matcher
 // between the holder and the one being rewritten, silently dropping assertions.
 
@@ -19,6 +22,9 @@ test('still rewrites when applied directly', function (string $value) {
 -----
 <?php
 
+/**
+ * @var string $value
+ */
 // Rebuilding the chain from the expect() holder would discard every matcher
 // between the holder and the one being rewritten, silently dropping assertions.
 

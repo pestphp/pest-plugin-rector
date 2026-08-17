@@ -98,7 +98,7 @@ CODE_SAMPLE
             }
 
             $firstSubjectType = $this->getType($firstSubject);
-            if ($firstSubjectType->isObject()->no()) {
+            if (! $firstSubjectType->isObject()->yes()) {
                 $newStmts[] = $stmt;
                 $i++;
 

@@ -78,7 +78,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($haystackArg->value)->isArray()->no()) {
+        if (! $this->getType($haystackArg->value)->isArray()->yes()) {
             return null;
         }
 

@@ -74,7 +74,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($arrayArg->value)->isArray()->no()) {
+        if (! $this->getType($arrayArg->value)->isArray()->yes()) {
             return null;
         }
 

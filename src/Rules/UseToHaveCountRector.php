@@ -91,7 +91,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($countArg->value)->isArray()->no() && $this->getType($countArg->value)->isIterable()->no()) {
+        if (! $this->getType($countArg->value)->isArray()->yes() && ! $this->getType($countArg->value)->isIterable()->yes()) {
             return null;
         }
 

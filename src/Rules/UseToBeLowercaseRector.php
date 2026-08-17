@@ -73,7 +73,7 @@ CODE_SAMPLE
         if ($this->isStrtolower($expectArg->left)) {
             $strtoLowerCall = $expectArg->left;
             if ($this->nodeComparator->areNodesEqual($this->getFirstArg($strtoLowerCall), $expectArg->right)) {
-                if ($this->getType($expectArg->right)->isString()->no()) {
+                if (! $this->getType($expectArg->right)->isString()->yes()) {
                     return null;
                 }
 
@@ -87,7 +87,7 @@ CODE_SAMPLE
         if ($this->isStrtolower($expectArg->right)) {
             $strtoLowerCall = $expectArg->right;
             if ($this->nodeComparator->areNodesEqual($expectArg->left, $this->getFirstArg($strtoLowerCall))) {
-                if ($this->getType($expectArg->left)->isString()->no()) {
+                if (! $this->getType($expectArg->left)->isString()->yes()) {
                     return null;
                 }
 

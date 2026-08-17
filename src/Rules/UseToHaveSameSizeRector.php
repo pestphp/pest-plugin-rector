@@ -93,7 +93,7 @@ CODE_SAMPLE
             }
 
             $firstArrayType = $this->getType($firstArray);
-            if ($firstArrayType->isArray()->no() && $firstArrayType->isIterable()->no()) {
+            if (! $firstArrayType->isArray()->yes() && ! $firstArrayType->isIterable()->yes()) {
                 return null;
             }
 
@@ -127,7 +127,7 @@ CODE_SAMPLE
             $expectArgument = $this->getMatcherSubject($node);
             if ($expectArgument instanceof Expr) {
                 $expectArgType = $this->getType($expectArgument);
-                if ($expectArgType->isArray()->no() && $expectArgType->isIterable()->no()) {
+                if (! $expectArgType->isArray()->yes() && ! $expectArgType->isIterable()->yes()) {
                     return null;
                 }
             }

@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @var float $value
+ */
 expect(is_nan($value))->toBeTrue();
 expect(is_nan(sqrt(-1)))->toBeTrue();
 expect(is_nan($value))->toBeFalse();
@@ -8,6 +11,9 @@ expect(is_nan($value))->toBeFalse();
 -----
 <?php
 
+/**
+ * @var float $value
+ */
 expect($value)->toBeNan();
 expect(sqrt(-1))->toBeNan();
 expect($value)->not->toBeNan();
