@@ -109,6 +109,10 @@ CODE_SAMPLE
 
             $expectArg = $this->getMatcherSubject($node);
             if ($expectArg instanceof Empty_) {
+                if (! $this->getType($expectArg->expr)->isObject()->no()) {
+                    return null;
+                }
+
                 $methodName = $node->name instanceof Identifier ? $node->name->name : null;
                 if ($methodName === null) {
                     return null;

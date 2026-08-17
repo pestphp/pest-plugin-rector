@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @var string $path
+ */
 expect(is_file($path) && is_readable($path))->toBeTrue();
 expect(is_file($path) && is_writable($path))->toBeTrue();
 expect(is_dir($path) && is_readable($path))->toBeTrue();
@@ -16,6 +19,9 @@ expect(is_file($path) && is_writeable($path))->toBeTrue();
 -----
 <?php
 
+/**
+ * @var string $path
+ */
 expect($path)->toBeReadableFile();
 expect($path)->toBeWritableFile();
 expect($path)->toBeReadableDirectory();

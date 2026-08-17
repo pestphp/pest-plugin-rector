@@ -134,6 +134,10 @@ CODE_SAMPLE
             return null;
         }
 
+        if (! $this->getType($leftArg->value)->isString()->yes()) {
+            return null;
+        }
+
         $matcher = $this->findCombinedFunctionMatcher($leftName, $rightName);
         if ($matcher === null) {
             return null;
