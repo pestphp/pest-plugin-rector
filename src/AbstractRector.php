@@ -171,17 +171,17 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
         $valueType = $this->getType($subject);
 
         return match ($typeCheck) {
-            'boolean' => ! $valueType->isBoolean()->no(),
-            'string' => ! $valueType->isString()->no(),
-            'integer' => ! $valueType->isInteger()->no(),
-            'float' => ! $valueType->isFloat()->no(),
-            'numeric' => ! $valueType->isInteger()->no() || ! $valueType->isFloat()->no(),
-            'array' => ! $valueType->isArray()->no(),
-            'object' => ! $valueType->isObject()->no(),
-            'iterable' => ! $valueType->isIterable()->no(),
-            'null' => ! $valueType->isNull()->no(),
-            'scalar' => ! $valueType->isScalar()->no(),
-            'callable' => ! $valueType->isCallable()->no(),
+            'boolean' => $valueType->isBoolean()->yes(),
+            'string' => $valueType->isString()->yes(),
+            'integer' => $valueType->isInteger()->yes(),
+            'float' => $valueType->isFloat()->yes(),
+            'numeric' => $valueType->isInteger()->yes() || $valueType->isFloat()->yes(),
+            'array' => $valueType->isArray()->yes(),
+            'object' => $valueType->isObject()->yes(),
+            'iterable' => $valueType->isIterable()->yes(),
+            'null' => $valueType->isNull()->yes(),
+            'scalar' => $valueType->isScalar()->yes(),
+            'callable' => $valueType->isCallable()->yes(),
             default => false,
         };
     }

@@ -74,7 +74,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($objectArg->value)->isObject()->no()) {
+        if (! $this->getType($objectArg->value)->isObject()->yes()) {
             return null;
         }
 

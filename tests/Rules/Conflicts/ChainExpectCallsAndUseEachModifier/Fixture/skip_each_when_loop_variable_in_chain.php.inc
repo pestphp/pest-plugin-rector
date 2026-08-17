@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @var string $broadcastId
+ */
 it('validates broadcast ID formats', function (): void {
     $broadcastIdFormats = [
         'abc123',
@@ -16,6 +19,9 @@ it('validates broadcast ID formats', function (): void {
 -----
 <?php
 
+/**
+ * @var string $broadcastId
+ */
 it('validates broadcast ID formats', function (): void {
     $broadcastIdFormats = [
         'abc123',

@@ -69,7 +69,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($pathArg->value)->isArray()->no()) {
+        if (! $this->getType($pathArg->value)->isArray()->yes()) {
             return null;
         }
 

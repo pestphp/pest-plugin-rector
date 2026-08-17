@@ -76,7 +76,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($pathArg->value)->isString()->no()) {
+        if (! $this->getType($pathArg->value)->isString()->yes()) {
             return null;
         }
 

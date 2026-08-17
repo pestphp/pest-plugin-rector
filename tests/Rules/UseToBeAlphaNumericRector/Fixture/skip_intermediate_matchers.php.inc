@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @var string $other
+ * @var string $value
+ */
 test('skips chains with intermediate matchers', function (string $value) {
     expect(ctype_alnum($value))->toBeBool()->toBeTrue();
 });
@@ -13,6 +17,10 @@ test('rewrites directly applied matchers, including through not', function (stri
 -----
 <?php
 
+/**
+ * @var string $other
+ * @var string $value
+ */
 test('skips chains with intermediate matchers', function (string $value) {
     expect(ctype_alnum($value))->toBeBool()->toBeTrue();
 });

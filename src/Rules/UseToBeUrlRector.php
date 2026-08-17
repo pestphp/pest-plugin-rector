@@ -73,7 +73,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($this->getType($urlArg)->isString()->no()) {
+            if (! $this->getType($urlArg)->isString()->yes()) {
                 return null;
             }
 
@@ -90,7 +90,7 @@ CODE_SAMPLE
                 return null;
             }
 
-            if ($this->getType($urlArg)->isString()->no()) {
+            if (! $this->getType($urlArg)->isString()->yes()) {
                 return null;
             }
 

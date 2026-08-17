@@ -69,7 +69,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($ctypeArg->value)->isString()->no()) {
+        if (! $this->getType($ctypeArg->value)->isString()->yes()) {
             return null;
         }
 

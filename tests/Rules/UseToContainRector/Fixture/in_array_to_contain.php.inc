@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @var array $array
+ * @var array $haystack
+ * @var array $list
+ */
 expect(in_array($item, $array))->toBeTrue();
 expect(in_array($needle, $haystack, true))->toBeTrue();
 expect(in_array('value', $list))->toBeTrue();
@@ -11,6 +16,11 @@ expect(in_array($item, $array))->toBeFalse();
 -----
 <?php
 
+/**
+ * @var array $array
+ * @var array $haystack
+ * @var array $list
+ */
 expect($array)->toContain($item);
 expect($haystack)->toContain($needle);
 expect($list)->toContain('value');

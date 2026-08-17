@@ -1,6 +1,18 @@
 <?php
 
+final class ChainedUser
+{
+    public string $name = 'Nuno...';
+
+    public int $id = 1;
+
+    public DateTimeInterface $created_at;
+}
+
 test('user', function () {
+    $user = new ChainedUser();
+    $roles = ['admin', 'editor', 'owner'];
+
     expect(strlen($user->name))->toBe(7);
     expect(count($roles))->toBe(3);
     expect(in_array('admin', $roles))->toBeTrue();
@@ -12,7 +24,19 @@ test('user', function () {
 -----
 <?php
 
+final class ChainedUser
+{
+    public string $name = 'Nuno...';
+
+    public int $id = 1;
+
+    public DateTimeInterface $created_at;
+}
+
 test('user', function () {
+    $user = new ChainedUser();
+    $roles = ['admin', 'editor', 'owner'];
+
     expect($user->name)->toHaveLength(7)
         ->and($roles)->toHaveCount(3)
         ->and(in_array('admin', $roles))->toBeTrue()

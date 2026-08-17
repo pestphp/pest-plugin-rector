@@ -91,7 +91,7 @@ CODE_SAMPLE
             }
 
             $firstArrayType = $this->getType($firstArray);
-            if ($firstArrayType->isArray()->no()) {
+            if (! $firstArrayType->isArray()->yes()) {
                 $newStmts[] = $stmt;
                 $i++;
 

@@ -87,7 +87,7 @@ CODE_SAMPLE
         $min = $left->right;
         $max = $right->right;
 
-        if ($this->getType($variable)->isInteger()->no() && $this->getType($variable)->isFloat()->no()) {
+        if (! $this->getType($variable)->isInteger()->yes() && ! $this->getType($variable)->isFloat()->yes()) {
             return null;
         }
 

@@ -79,7 +79,7 @@ CODE_SAMPLE
             return null;
         }
 
-        if ($this->getType($haystackArg->value)->isArray()->no() && $this->getType($haystackArg->value)->isIterable()->no()) {
+        if (! $this->getType($haystackArg->value)->isArray()->yes() && ! $this->getType($haystackArg->value)->isIterable()->yes()) {
             return null;
         }
 
