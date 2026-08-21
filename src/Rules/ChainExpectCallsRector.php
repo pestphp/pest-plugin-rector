@@ -32,6 +32,11 @@ final class ChainExpectCallsRector extends AbstractRector implements Configurabl
 {
     public const string MERGE_DIFFERENT_VARIABLES = 'merge_different_variables';
 
+    /**
+     * @var list<string>
+     */
+    private const array SUBJECT_TRANSFORMING_METHODS = ['and', 'json', 'each', 'match', 'sequence', 'unless', 'when'];
+
     private bool $mergeDifferentVariables = true;
 
     /**
@@ -163,22 +168,13 @@ CODE_SAMPLE
                 }
 
                 if ($this->nodeComparator->areNodesEqual($firstExpectArg, $nextExpectArg)) {
-                    $currentMethods = $this->collectChainMethods($methodCall);
-                    $hasAnd = false;
-                    foreach ($currentMethods as $cm) {
-                        $nameValue = $cm['name'];
-                        $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
-                        if ($name === 'and') {
-                            $hasAnd = true;
-                            break;
-                        }
-                    }
+                    $transformsSubject = $this->transformsSubject($methodCall);
 
-                    if ($hasAnd && ! $this->mergeDifferentVariables) {
+                    if ($transformsSubject && ! $this->mergeDifferentVariables) {
                         continue;
                     }
 
-                    if ($hasAnd && $this->mergeDifferentVariableChains($stmts, $key)) {
+                    if ($transformsSubject && $this->mergeDifferentVariableChains($stmts, $key)) {
                         $hasChanged = true;
                         $changedInPass = true;
                         break;
@@ -219,6 +215,20 @@ CODE_SAMPLE
         $this->setStatements($node, $stmts);
 
         return $node;
+    }
+
+    private function transformsSubject(MethodCall $methodCall): bool
+    {
+        foreach ($this->collectChainMethods($methodCall) as $method) {
+            $nameValue = $method['name'];
+            $name = $nameValue instanceof Node ? $this->getName($nameValue) : $nameValue;
+
+            if (in_array($name, self::SUBJECT_TRANSFORMING_METHODS, true)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function isSideEffectFree(Expr $expr): bool
