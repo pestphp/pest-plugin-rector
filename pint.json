@@ -3,7 +3,8 @@
     "notPath": [
         "**/Fixture/**",
         "**/Source/**",
-        "**/Expected/**"
+        "**/Expected/**",
+        "third-party/**"
     ],
     "rules": {
         "array_push": true,
