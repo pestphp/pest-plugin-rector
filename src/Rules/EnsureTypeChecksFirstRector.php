@@ -9,6 +9,7 @@ use Pest\Rector\ValueObject\CodeSample\CodeSample;
 use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
@@ -164,7 +165,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}  $method
+     * @param  array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}  $method
      */
     private function resolveMethodName(array $method): ?string
     {
@@ -174,8 +175,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
-     * @return array<array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>>
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $methods
+     * @return array<array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>>
      */
     private function groupIntoUnits(array $methods): array
     {
@@ -199,7 +200,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $unit
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $unit
      */
     private function isTypeUnit(array $unit): bool
     {
@@ -215,8 +216,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
-     * @return array{type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>, non_type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>}
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $methods
+     * @return array{type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>, non_type: array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>}
      */
     private function partitionTypeAndNonType(array $methods): array
     {
@@ -271,13 +272,13 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>  $methods
-     * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}>
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $methods
+     * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>
      */
     private function reorderWithinAndSegments(array $methods): array
     {
         $result = [];
-        /** @var array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>}> $segment */
+        /** @var array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}> $segment */
         $segment = [];
 
         $flushSegment = function () use (&$segment, &$result): void {

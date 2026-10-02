@@ -378,7 +378,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|Node\VariadicPlaceholder>  $args
+     * @param  array<Arg|Node\VariadicPlaceholder|Node\ArgPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticClassNames(array $args): array
@@ -420,7 +420,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|Node\VariadicPlaceholder>  $args
+     * @param  array<Arg|Node\VariadicPlaceholder|Node\ArgPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticPaths(array $args): array
