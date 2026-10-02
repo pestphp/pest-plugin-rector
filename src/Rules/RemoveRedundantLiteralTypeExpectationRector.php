@@ -8,15 +8,15 @@ use Pest\Rector\AbstractSemanticPestRector;
 use Pest\Rector\Analyzer\PestChainAnalyzer;
 use Pest\Rector\Analyzer\SemanticExpectationAnalyzer;
 use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
 use Pest\Rector\ValueObject\ExpectationSemanticAnalysis;
 use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\PropertyFetch;
 use PhpParser\Node\Identifier;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RemoveRedundantLiteralTypeExpectationRector extends AbstractSemanticPestRector
 {

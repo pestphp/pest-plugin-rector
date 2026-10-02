@@ -7,15 +7,15 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractSemanticPestRector;
 use Pest\Rector\Analyzer\PestChainAnalyzer;
 use Pest\Rector\Registry\PestSemanticIssues;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
 use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\UnaryMinus;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Scalar\Int_;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class FixInvalidRepeatValueRector extends AbstractSemanticPestRector
 {

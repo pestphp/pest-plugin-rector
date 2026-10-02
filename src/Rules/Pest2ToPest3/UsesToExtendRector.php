@@ -6,6 +6,8 @@ namespace Pest\Rector\Rules\Pest2ToPest3;
 
 use Pest\Rector\AbstractRector;
 use Pest\Rector\Analyzer\PestChainAnalyzer;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -16,8 +18,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UsesToExtendRector extends AbstractRector
 {

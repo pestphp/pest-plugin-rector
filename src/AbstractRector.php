@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Pest\Rector;
 
+use Pest\Rector\Contract\DocumentedRuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -33,7 +34,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector as BaseAbstractRector;
-use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
 /**
  * @phpstan-type StmtsAwareNode Block|Closure|Case_|Catch_|ClassMethod|Declare_|Do_|Else_|ElseIf_|Finally_|For_|Foreach_|Function_|If_|Namespace_|TryCatch|While_|FileNode

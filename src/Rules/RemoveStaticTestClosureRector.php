@@ -7,11 +7,11 @@ namespace Pest\Rector\Rules;
 use Pest\Rector\AbstractSemanticPestRector;
 use Pest\Rector\Registry\PestSemanticIssues;
 use Pest\Rector\Support\PestFunctionDetector;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
 use Pest\Rector\ValueObject\PestSemanticIssue;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RemoveStaticTestClosureRector extends AbstractSemanticPestRector
 {

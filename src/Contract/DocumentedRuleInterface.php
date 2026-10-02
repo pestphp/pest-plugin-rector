@@ -2,13 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Symplify\RuleDocGenerator\Contract;
+namespace Pest\Rector\Contract;
 
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
+use Pest\Rector\ValueObject\RuleDefinition;
 
-/**
- * @api
- */
 interface DocumentedRuleInterface
 {
     public function getRuleDefinition(): RuleDefinition;

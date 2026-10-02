@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pest\Rector\Rules;
 
 use Pest\Rector\AbstractRector;
+use Pest\Rector\ValueObject\CodeSample\ConfiguredCodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\ArrayItem;
@@ -25,8 +27,6 @@ use PhpParser\Node\Stmt\Expression;
 use Rector\Contract\Rector\ConfigurableRectorInterface;
 use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\ConfiguredCodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class ChainExpectCallsRector extends AbstractRector implements ConfigurableRectorInterface
 {

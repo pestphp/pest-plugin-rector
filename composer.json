@@ -36,13 +36,9 @@
     "conflict": {
         "pestphp/pest": "<5.0.0"
     },
-    "replace": {
-        "symplify/rule-doc-generator-contracts": "11.2.0"
-    },
     "autoload": {
         "psr-4": {
-            "Pest\\Rector\\": "src/",
-            "Symplify\\RuleDocGenerator\\": "third-party/rule-doc-generator-contracts/src"
+            "Pest\\Rector\\": "src/"
         }
     },
     "autoload-dev": {

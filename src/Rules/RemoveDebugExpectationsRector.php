@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Pest\Rector\Rules;
 
 use Pest\Rector\AbstractRector;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RemoveDebugExpectationsRector extends AbstractRector
 {
