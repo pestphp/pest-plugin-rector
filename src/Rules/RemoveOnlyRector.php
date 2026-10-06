@@ -6,12 +6,12 @@ namespace Pest\Rector\Rules;
 
 use Pest\Rector\AbstractRector;
 use Pest\Rector\Analyzer\PestChainAnalyzer;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Identifier;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class RemoveOnlyRector extends AbstractRector
 {

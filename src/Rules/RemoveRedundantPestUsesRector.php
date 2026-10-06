@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Pest\Rector\Rules;
 
 use Pest\Rector\AbstractRector;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
 use PhpParser\Node\Expr;
@@ -21,8 +23,6 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use Rector\PhpParser\Node\FileNode;
 use Rector\PhpParser\Parser\SimplePhpParser;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 use Throwable;
 
 final class RemoveRedundantPestUsesRector extends AbstractRector
@@ -378,7 +378,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|Node\VariadicPlaceholder>  $args
+     * @param  array<Arg|Node\VariadicPlaceholder|Node\ArgPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticClassNames(array $args): array
@@ -420,7 +420,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|Node\VariadicPlaceholder>  $args
+     * @param  array<Arg|Node\VariadicPlaceholder|Node\ArgPlaceholder>  $args
      * @return list<string>
      */
     private function resolveStaticPaths(array $args): array

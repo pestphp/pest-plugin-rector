@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace Pest\Rector;
 
+use Pest\Rector\Contract\DocumentedRuleInterface;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Closure;
 use PhpParser\Node\Expr\FuncCall;
@@ -33,7 +35,6 @@ use Rector\NodeTypeResolver\Node\AttributeKey;
 use Rector\PhpParser\Enum\NodeGroup;
 use Rector\PhpParser\Node\FileNode;
 use Rector\Rector\AbstractRector as BaseAbstractRector;
-use Symplify\RuleDocGenerator\Contract\DocumentedRuleInterface;
 
 /**
  * @phpstan-type StmtsAwareNode Block|Closure|Case_|Catch_|ClassMethod|Declare_|Do_|Else_|ElseIf_|Finally_|For_|Foreach_|Function_|If_|Namespace_|TryCatch|While_|FileNode
@@ -226,7 +227,7 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
     }
 
     /**
-     * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>, is_property?: bool}>
+     * @return array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>, is_property?: bool}>
      */
     protected function collectChainMethods(MethodCall $methodCall): array
     {
@@ -265,7 +266,7 @@ abstract class AbstractRector extends BaseAbstractRector implements DocumentedRu
     }
 
     /**
-     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder>, is_property?: bool}>  $methods
+     * @param  array<array{name: Expr|Identifier|string, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>, is_property?: bool}>  $methods
      */
     protected function rebuildMethodChain(Expr $base, array $methods): Expr
     {

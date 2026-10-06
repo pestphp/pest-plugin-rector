@@ -6,8 +6,11 @@ namespace Pest\Rector\Rules\Pest2ToPest3;
 
 use Pest\Rector\AbstractRector;
 use Pest\Rector\Analyzer\PestChainAnalyzer;
+use Pest\Rector\ValueObject\CodeSample\CodeSample;
+use Pest\Rector\ValueObject\RuleDefinition;
 use PhpParser\Node;
 use PhpParser\Node\Arg;
+use PhpParser\Node\ArgPlaceholder;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\FuncCall;
@@ -16,8 +19,6 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\VariadicPlaceholder;
 use PHPStan\Reflection\ReflectionProvider;
-use Symplify\RuleDocGenerator\ValueObject\CodeSample\CodeSample;
-use Symplify\RuleDocGenerator\ValueObject\RuleDefinition;
 
 final class UsesToExtendRector extends AbstractRector
 {
@@ -130,7 +131,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>
+     * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>
      */
     private function collectMethodsFromFuncCall(MethodCall $outermost): array
     {
@@ -149,8 +150,8 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|VariadicPlaceholder>  $args
-     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>  $methodsAfter
+     * @param  array<Arg|VariadicPlaceholder|ArgPlaceholder>  $args
+     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $methodsAfter
      */
     private function transformUsesArgs(array $args, array $methodsAfter): ?Node
     {
@@ -223,7 +224,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>
+     * @return array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>
      */
     private function collectMethodsUntilUses(MethodCall $outermost): array
     {
@@ -246,7 +247,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder>}>  $methodsAfter
+     * @param  array<array{name: Identifier|Expr, args: array<Arg|VariadicPlaceholder|ArgPlaceholder>}>  $methodsAfter
      */
     private function transformPestUsesCall(MethodCall $usesCall, array $methodsAfter): ?Node
     {
@@ -283,7 +284,7 @@ CODE_SAMPLE
     }
 
     /**
-     * @param  array<Arg|VariadicPlaceholder>  $args
+     * @param  array<Arg|VariadicPlaceholder|ArgPlaceholder>  $args
      * @return array{0: array<Arg>, 1: array<Arg>}
      */
     private function separateClassesAndTraits(array $args): array
