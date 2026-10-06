@@ -26,7 +26,10 @@ jobs:
         coverage: none
 
     - name: Install Dependencies
-      run: composer update --prefer-stable --no-interaction --no-progress --ansi
+      run: composer update --${{ matrix.dependency-version }} --no-interaction --no-progress --ansi
+
+    - name: Audit
+      run: composer audit --locked --no-interaction
 
     - name: Types
       run: composer test:types
