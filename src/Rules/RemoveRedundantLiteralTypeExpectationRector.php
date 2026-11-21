@@ -174,7 +174,7 @@ CODE_SAMPLE
 
     private function getCurrentFileContents(): string
     {
-        $filePath = $this->file->getFilePath();
+        $filePath = $this->getFile()->getFilePath();
 
         return $this->fileContentsByPath[$filePath] ??= (string) file_get_contents($filePath);
     }

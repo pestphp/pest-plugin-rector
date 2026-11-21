@@ -180,7 +180,7 @@ CODE_SAMPLE
 
         $localUse->args = $remainingArgs;
 
-        return $statement;
+        return clone $statement;
     }
 
     private function matchLocalUse(Expr $expr): FuncCall|MethodCall|null
